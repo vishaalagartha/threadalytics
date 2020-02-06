@@ -1,8 +1,16 @@
+@font-face {
+  font-family: 'Action Bold NBA';
+  src: local('Action Bold NBA'), url(./fonts/Action-Bold-NBA.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Action Italics NBA';
+  src: local('Action Italics NBA'), url(./fonts/Action-Italics-NBA.ttf) format('truetype');
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: Action Bold NBA;
+  font-weight: bold;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

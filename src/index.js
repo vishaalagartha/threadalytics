@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './fonts/Action-Bold-NBA.ttf'
+import './fonts/Action-Italics-NBA.ttf'
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
