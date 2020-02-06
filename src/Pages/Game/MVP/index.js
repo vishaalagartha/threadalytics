@@ -81,7 +81,7 @@ export default class MVP extends Component {
   render() {
     return (
       <Row>
-        <Col xs={6}>
+        <Col xs={12} md={6}>
           <Card>
             <Card.Header>
               <FaTrophy style={{marginRight: '10px'}} />
@@ -92,7 +92,7 @@ export default class MVP extends Component {
             </Card.Body>
           </Card>
         </Col>
-        <Col xs={6}>
+        <Col xs={12} md={6} style={window.innerWidth<=760 ? {margin: '1em 0em 3em 0em'} : {}}>
           <Card>
             <Card.Header>
               <FaMedal style={{marginRight: '10px'}} />

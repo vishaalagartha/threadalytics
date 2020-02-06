@@ -14,7 +14,8 @@ export default class WordCloud extends Component {
     super(props)
     this.state = {
       comments: [{text: '', value: 0}],
-      data: []
+      data: [],
+      width: 0
     }
   }
   
@@ -36,7 +37,8 @@ export default class WordCloud extends Component {
       for(let w in words){
         data.push({'text': w, 'value': words[w]})
       }
-      this.setState({comments: this.props.comments, data})
+      const width = window.innerWidth<=760 ? document.getElementById('wordCloudCol').offsetWidth-20 : document.getElementById('wordCloudCol').offsetWidth
+      this.setState({comments: this.props.comments, data, width})
     }
     if(d3.select('#wordCloud').selectAll('text').size()===this.state.data.length){
       d3.select('#wordCloud').selectAll('text')
@@ -86,6 +88,7 @@ export default class WordCloud extends Component {
           rotate={rotate}
           onWordMouseOver={this.onWordMouseOver}
           onWordMouseOut={this.onWordMouseOut}
+          width={this.state.width}
           style={{'.div > .svg > .text': 'Action Bold NBA !important'}}
         />
       </Card>

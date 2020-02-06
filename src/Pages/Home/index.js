@@ -42,15 +42,15 @@ export default class Home extends Component {
 
   renderGamesForDate = (games) => {
 
-    return games.map(g => {
+    return games.map(g=> {
       const homeAbbr = TEAM_TO_TEAM_ABBR[g['Home'].toUpperCase()]
       const awayAbbr = TEAM_TO_TEAM_ABBR[g['Away'].toUpperCase()]
       const homeImageUrl = 'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + homeAbbr.toLowerCase() + '.png'
       const awayImageUrl = 'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + awayAbbr.toLowerCase() + '.png'
 
       return (
-        <Col xs={3} style={styles.analysis}>
-          <a href={'/games/'+g['Endpoint']} key={g['Game ID']}>
+         <Col key={g['Game ID']} xs={12} md={3} style={styles.analysis}>
+          <a href={'/games/'+g['Endpoint']}>
             <Row>
               <Col xs={6}>
                 <Image alt={g['Away']} src={awayImageUrl} roundedCircle fluid/>
@@ -76,7 +76,9 @@ export default class Home extends Component {
       return (
           <div key={i}>
             <Row>
-               {d}
+                <Col xs={12}>
+                 {d}
+                </Col>
              </Row>
              <Row style={{justifyContent: 'space-around'}}>
                {this.renderGamesForDate(games)}
@@ -88,37 +90,41 @@ export default class Home extends Component {
   }
 
   render() {
-    console.log(this.state)
     return (
       <div>
         <Header/>
         <Container>
           <Row className='text-center' style={{marginTop: '10%'}}>
-            <h4>
-              Providing you with in-depth insights into r/nba Game Thread commentary from fans.
-            </h4>
+            <Col xs={12}>
+              <h4>
+                Providing you with in-depth insights into r/nba Game Thread commentary from fans.
+              </h4>
+            </Col>
           </Row>
           <Row style={{marginTop: '5%'}}>
-            <h5 className='text-center' style={{fontSize: '0.8em'}}>
-              The r/nba Game Thread Analyzer performs natural language processing to give you a different view of game threads.
-            </h5>
-            <h5 style={{fontFamily: 'Action Italics NBA'}}>
-              <br/>
-              Who was the thread's MVP?
-              <br/>
-              How did people feel throughout the game?
-              <br/>
-              Who dropped the most f-bombs during the game?
-              <br/>
-              What was the saddest comment of the thread?
-            </h5>
+            <Col xs={12}>
+              <h5 className='text-center' style={{fontSize: '0.8em'}}>
+                THREADALYTICS
+                performs natural language processing to give you a different view of game threads.
+              </h5>
+              <h5 style={{fontFamily: 'Action Italics NBA'}}>
+                <br/>
+                Who was the thread's MVP?
+                <br/>
+                How did people feel throughout the game?
+                <br/>
+                Who dropped the most f-bombs during the game?
+                <br/>
+                What was the saddest comment of the thread?
+              </h5>
+            </Col>
           </Row>
           <h5>
             Find out now.
           </h5>
-          <div style={{margin: '2em 0em 2em 0em'}}>
+          <Col xs={12} style={{margin: '2em 0em 2em 0em'}}>
             {this.renderGames()}
-          </div>
+          </Col>
         </Container>
       </div>
     )

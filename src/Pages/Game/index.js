@@ -51,17 +51,17 @@ export default class Game extends Component {
         <GameHeader home={this.state.home} homeRecord={this.state.homeRecord} 
                     away={this.state.away} awayRecord={this.state.awayRecord}
                     date={this.state.date}/>
-        <Container className='text-center'>
+        <Container className='text-center' style={{marginBottom: '1em'}}>
           <Row style={{marginTop: '1em'}}>
-            <Col xs={12}>
+            <Col xs={12} id='wordCloudCol'>
               <WordCloud comments={this.state.comments}/>
             </Col>
           </Row>
           <Row style={{marginTop: '1em'}}>
-            <Col xs={8}>
+            <Col xs={12} md={8}>
               <FrequencyChart comments={this.state.comments}/>
             </Col>
-            <Col xs={4}>
+            <Col xs={12} md={4} style={window.innerWidth<=760 ? {marginTop: '1em'} : {}}>
               <GameSummary comments={this.state.comments}/>
             </Col>
           </Row>
@@ -71,21 +71,23 @@ export default class Game extends Component {
             </Col>
           </Row>
           <Row style={{marginTop: '1em'}}>
-            <Col xs={8}>
+            <Col xs={12} md={8}>
               <FStatistics comments={this.state.comments}/>
             </Col>
-            <Col xs={4}>
+            <Col xs={12} md={4} style={window.innerWidth<=760 ? {marginTop: '1em'} : {}}>
               <RefStatistics comments={this.state.comments}/>
             </Col>
           </Row>
           <Row style={{marginTop: '1em'}}>
-            <MVP comments={this.state.comments}/>
+            <Col xs={12}>
+              <MVP comments={this.state.comments}/>
+            </Col>
           </Row>
-          <Row style={{marginTop: '1em', marginBottom: '1em'}}>
-            <Col xs={6}>
+          <Row style={{marginTop: '1em', marginBottom: '2em'}}>
+            <Col xs={12} md={6}>
               <PositiveAuthor comments={this.state.comments}/>
             </Col>
-            <Col xs={6}>
+            <Col xs={12} md={6} style={window.innerWidth<=760 ? {margin: '1em 0em 3em 0em'} : {}}>
               <NegativeAuthor comments={this.state.comments}/>
             </Col>
           </Row>

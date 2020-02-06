@@ -60,15 +60,38 @@ export default class FrequencyChart extends Component {
     const yScale = d3.scaleLinear().domain([0, d3.max(data, d => d.y)])
                                  .range([height, 0])
 
-    chart.append('g')
-        .attr('class', 'y axis')
-        .call(d3.axisLeft(yScale))
+    const xAxis = d3.axisBottom(xScale)
+    const yAxis = d3.axisLeft(yScale)
+
+    xAxis.tickFormat(d3.timeFormat('%I:%M %p'))
 
     chart.append('g')
-        .attr('class', 'x axis')
+        .attr('class', 'y-axis')
+        .call(yAxis)
+
+    chart.append('g')
+        .attr('class', 'x-axis')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(xScale)
-                .tickFormat(d3.timeFormat('%I:%M %p')))
+        .call(xAxis)
+
+    d3.select('.x-axis')
+      .selectAll('text')
+      .filter((d, i) => {
+        if(i%2===0)
+          return true
+        return false
+      })
+      .remove()
+
+    d3.select('.y-axis')
+      .selectAll('text')
+      .filter((d, i) => {
+        if(i%2===0)
+          return true
+        return false
+      })
+      .remove()
+
 
     let valueline = d3.line()
         .x(d => xScale(d.x))
@@ -110,11 +133,6 @@ export default class FrequencyChart extends Component {
               .duration(200)   
               .style('opacity', 0)
          })
-
-    chart.append('text')
-         .text('Number of Comments')
-         .style('font-size', '20px')
-         .attr('transform', `translate(${width/3}, -20)`)
 
     chart.append('text')
          .text('Time')
