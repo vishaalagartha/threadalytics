@@ -11,7 +11,7 @@ export default class Summary extends Component {
     }
   }
 
-  componentDidUpdate(){
+  UNSAFE_componentWillMount(){
     if(this.props.comments!==this.state.comments)
       this.setState({...this.props})
   }

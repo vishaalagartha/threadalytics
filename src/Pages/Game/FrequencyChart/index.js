@@ -26,11 +26,9 @@ export default class FrequencyChart extends Component {
     }
   }
   
-  componentDidUpdate(){
-    if(this.props.comments!==this.state.comments){
-      this.setState({...this.props})
-      this.drawChart(this.props.comments)
-    }
+  componentDidMount(){
+    this.setState({...this.props})
+    this.drawChart(this.props.comments)
   }
 
   drawChart(comments) {
@@ -42,8 +40,6 @@ export default class FrequencyChart extends Component {
                      .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
     const timestamps = comments.map(c => c.created_utc*1000).sort()
-    console.log(comments.filter(c => c.created_utc*1000===timestamps[0]))
-    console.log(comments.filter(c => c.created_utc*1000===timestamps[1]))
     let data = []
     let last_timestamp = timestamps[0]+100*1000
     data.push({'x': timestamps[0], 'y': 0})

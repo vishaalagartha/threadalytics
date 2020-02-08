@@ -26,11 +26,9 @@ export default class SentimentChart extends Component {
     }
   }
   
-  componentDidUpdate(){
-    if(this.props.comments!==this.state.comments){
-      this.setState({...this.props})
-      this.drawChart(this.props.comments)
-    }
+  componentDidMount(){
+    this.setState({...this.props})
+    this.drawChart(this.props.comments)
   }
 
   drawChart(comments) {
@@ -40,7 +38,7 @@ export default class SentimentChart extends Component {
     const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom
     const chart = svg.append('g')
                      .attr('transform', `translate(${margin.left}, ${margin.top})`)
-    const sentiments = comments.map(c => {
+    const sentiments = comments.filter(c => 'tones' in c).map(c => {
       return {timestamp: c.created_utc*1000, compound: c.tones.compound}
     }).sort((a, b) => a.timestamp-b.timestamp)
 
@@ -72,7 +70,7 @@ export default class SentimentChart extends Component {
 
     chart.append('g')
         .attr('class', 'x axis')
-        .attr('transform', `translate(0,${height/2})`)
+        .attr('transform', `translate(0,${yScale(0)})`)
         .call(d3.axisBottom(xScale)
                 .tickFormat(d3.timeFormat('%I:%M %p')))
 

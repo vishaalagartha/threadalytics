@@ -30,18 +30,44 @@ export default class Home extends Component {
     }
   }
 
-  componentWillMount() {
-    fetch('https://api.myjson.com/bins/rdgte')
+  UNSAFE_componentWillMount() {
+    let after = 1571731200
+    let before = parseInt(+ new Date()/1000)
+    this.fetchGames(after, before)
+  }
+
+  addGames(data) {
+    const re =  /GAME THREAD: (.*) \((\d+-\d+)\) @ (.*) \((\d+-\d+)\) - \((.*)\)/
+    const newGames = data.map(d => {
+      const m = re.exec(d.title)
+      if(m===null) return null
+      return {
+          'Home': m[1],
+          'Home Record': m[2],
+          'Away': m[3],
+          'Away Record': m[4],
+          'Date': m[5],
+          'Game ID': d.id,
+       }
+    }).filter(g => g!==null)
+
+    this.setState({games: [...this.state.games, ...newGames]})
+  }
+
+  fetchGames(after, before){
+    fetch(`https://api.pushshift.io/reddit/search/submission/?subreddit=nba&after=${after}&before=${before}&q=GAME%20THREAD&selftext=Reddit%20Stream&sort=desc`)
         .then(res => res.json())
         .then(
         result => {
-          this.setState({games: result.reverse()})   
+          const data = result.data
+          before = data[data.length-1].created_utc
+          const nResults = data.length 
+          this.addGames(data)
+          if(nResults===25) this.fetchGames(after, before)
         })
-        
   }
 
   renderGamesForDate = (games) => {
-
     return games.map(g=> {
       const homeAbbr = TEAM_TO_TEAM_ABBR[g['Home'].toUpperCase()]
       const awayAbbr = TEAM_TO_TEAM_ABBR[g['Away'].toUpperCase()]
@@ -50,7 +76,7 @@ export default class Home extends Component {
 
       return (
          <Col key={g['Game ID']} xs={12} md={3} style={styles.analysis}>
-          <a href={'/games/'+g['Endpoint']}>
+          <a href={'/games/'+g['Game ID']}>
             <Row>
               <Col xs={6}>
                 <Image alt={g['Away']} src={awayImageUrl} roundedCircle fluid/>
@@ -86,7 +112,6 @@ export default class Home extends Component {
           </div>
        )
     })
-
   }
 
   render() {

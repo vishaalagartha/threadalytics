@@ -5,7 +5,7 @@ import Cloud from 'react-d3-cloud'
 import {stopwords} from './stopwords'
 import * as d3 from 'd3'
  
-const fontSizeMapper = word => Math.log2(word.value) * 7
+const fontSizeMapper = word => Math.log2(word.value) * 3
 const rotate = word => word.value % 360;
  
 export default class WordCloud extends Component {
@@ -19,33 +19,34 @@ export default class WordCloud extends Component {
     }
   }
   
-  componentDidUpdate(){
-    if(this.props.comments!==this.state.comments){
-      let words = {}
-      this.props.comments.forEach(c => {
-        const text = c.text
-        const fixedText = text.replace(/(~|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|'|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g,'').toLowerCase().split(' ')
-        fixedText.forEach(w => {
-          if(stopwords.indexOf(w)===-1){
-            if(! (w in words))
-              words[w] = 0
-            words[w]++
-          }
-        })
+  componentDidMount(){
+    let words = {}
+    this.props.comments.forEach(c => {
+      const text = c.body
+      const fixedText = text.replace(/(~|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|'|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g,'').toLowerCase().split(' ')
+      fixedText.forEach(w => {
+        if(stopwords.indexOf(w)===-1){
+          if(! (w in words))
+            words[w] = 0
+          words[w]++
+        }
       })
-      let data = []
-      for(let w in words){
-        data.push({'text': w, 'value': words[w]})
-      }
-      const width = window.innerWidth<=760 ? document.getElementById('wordCloudCol').offsetWidth-20 : document.getElementById('wordCloudCol').offsetWidth
-      this.setState({comments: this.props.comments, data, width})
-    }
-    if(d3.select('#wordCloud').selectAll('text').size()===this.state.data.length){
+    })
+
+    let data = []
+
+    for(let w in words)
+      data.push({'text': w, 'value': words[w]})
+
+    const width = window.innerWidth<=760 ? document.getElementById('wordCloudCol').offsetWidth-20 : document.getElementById('wordCloudCol').offsetWidth
+
+    this.setState({comments: this.props.comments, data, width})
+
+    if(d3.select('#wordCloud').selectAll('text').size()===this.state.data.length)
       d3.select('#wordCloud').selectAll('text')
         .style('font-family', function(){
             return 'Action Bold NBA'
         })
-    }
   }
 
   onWordMouseOver(data) {

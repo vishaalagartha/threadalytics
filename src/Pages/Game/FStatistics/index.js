@@ -13,7 +13,7 @@ export default class FStatistics extends Component {
     }
   }
 
-  componentDidUpdate(){
+  UNSAFE_componentWillMount(){
     if(this.props.comments!==this.state.comments)
       this.setState({...this.props})
   }
@@ -21,9 +21,9 @@ export default class FStatistics extends Component {
   getFCount(){
     let fCount = 0
     this.state.comments.forEach(c => {
-      const text = c.text.toLowerCase()
+      const body = c.body.toLowerCase()
       fDerivatives.forEach(d => {
-        const matches = text.match(d)
+        const matches = body.match(d)
         if(matches!==null)
           fCount+=matches.length
       })
@@ -46,12 +46,12 @@ export default class FStatistics extends Component {
     let examples = []
     for(let i=0; i<this.state.comments.length; i++){
       const c = this.state.comments[i]
-      const text = c.text.toLowerCase()
+      const body = c.body.toLowerCase()
       for(let j=0; j<fDerivatives.length; j++){
         const d = fDerivatives[j]
-        const matches = text.match(d)
+        const matches = body.match(d)
         if(matches!==null)
-          examples.push({author: c.author, text: c.text})
+          examples.push({author: c.author, body: c.body})
         if(examples.length>5) break
       }
       if(examples.length>5) break
@@ -60,7 +60,7 @@ export default class FStatistics extends Component {
     return examples.map((el, i) => {
       return (
         <p key={i} style={{fontSize: '0.8em', fontFamily: 'Action Italics NBA'}}>
-          "{el.text}"
+          "{el.body}"
           <br/>
           - 
           {' '}
@@ -75,9 +75,9 @@ export default class FStatistics extends Component {
   getTopFAuthors(){
     let authors = {}
     this.state.comments.forEach(c => {
-      const text = c.text.toLowerCase()
+      const body = c.body.toLowerCase()
       fDerivatives.forEach(d => {
-        const matches = text.match(d)
+        const matches = body.match(d)
         if(!(c.author in authors))
           authors[c.author]=0
         if(matches!==null)

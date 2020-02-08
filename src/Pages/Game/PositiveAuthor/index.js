@@ -11,7 +11,7 @@ export default class PositiveAuthor extends Component {
     }
   }
 
-  componentDidUpdate(){
+  UNSAFE_componentWillMount(){
     if(this.props.comments!==this.state.comments)
       this.setState({...this.props})
   }
@@ -22,7 +22,8 @@ export default class PositiveAuthor extends Component {
     this.state.comments.forEach(c => {
       if(!(c.author in authors))
         authors[c.author]=0
-      authors[c.author]+=c.tones.pos
+      if('tones' in c)
+        authors[c.author]+=c.tones.pos
     })
     let sortable = []
     for(let a in authors)
@@ -34,7 +35,7 @@ export default class PositiveAuthor extends Component {
     for(let i=0; i<this.state.comments.length; i++){
       const c = this.state.comments[i]
       if(c.author===author && c.tones.pos>=0.5)
-        authorComments.push(c.text)
+        authorComments.push(c.body)
     }
 
     return (

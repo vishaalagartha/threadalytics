@@ -11,7 +11,7 @@ export default class MVP extends Component {
     }
   }
 
-  componentDidUpdate(){
+  UNSAFE_componentWillMount(){
     if(this.props.comments!==this.state.comments)
       this.setState({...this.props})
   }
@@ -34,7 +34,7 @@ export default class MVP extends Component {
     for(let i=0; i<this.state.comments.length; i++){
       const c = this.state.comments[i]
       if(c.author===MVP)
-        MvpComments.push(c.text)
+        MvpComments.push(c.body)
       if(MvpComments.length>5) break
     }
 
