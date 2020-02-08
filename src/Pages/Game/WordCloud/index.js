@@ -1,11 +1,21 @@
 import React, {Component} from 'react'
-import {Card} from 'react-bootstrap'
 import {FaCloud} from 'react-icons/fa'
 import Cloud from 'react-d3-cloud'
 import {stopwords} from './stopwords'
 import * as d3 from 'd3'
  
-const fontSizeMapper = word => Math.log2(word.value) * 3
+const fontSizeMapper = (word, numWords) => {
+  let multiplier
+  if(numWords<1000)
+    multiplier = 20
+  else if(numWords<3000)
+    multiplier = 10
+  else if(numWords<4000)
+    multiplier = 5
+  else
+    multiplier = 2
+  return Math.log2(word.value) * multiplier
+}
 const rotate = word => word.value % 360;
  
 export default class WordCloud extends Component {
@@ -78,21 +88,21 @@ export default class WordCloud extends Component {
 
   render() {
     return (
-      <Card style={{width: '100%', height: '100%'}} id='wordCloud'>
-        <Card.Header>
+      <div style={{width: '100%', height: '100%'}} id='wordCloud'>
+        <h3>
           <FaCloud style={{marginRight: '10px'}} />
           Word Cloud
-        </Card.Header>
+        </h3>
         <Cloud
           data={this.state.data}
-          fontSizeMapper={fontSizeMapper}
+          fontSizeMapper={d => fontSizeMapper(d, this.state.data.length)}
           rotate={rotate}
           onWordMouseOver={this.onWordMouseOver}
           onWordMouseOut={this.onWordMouseOut}
           width={this.state.width}
           style={{'.div > .svg > .text': 'Action Bold NBA !important'}}
         />
-      </Card>
+      </div>
     )
   }
 }
