@@ -11,7 +11,7 @@ const styles = {
     justifyContent: 'space-around'
   },
   centerColumn: {
-    marginTop: '2.2em'
+    marginTop: '3.0em'
   }
 }
 

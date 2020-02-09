@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Row, Col, Image } from 'react-bootstrap'
 import Header from 'Components/Header'
-//import Logos from 'assets/images/logos.png'
+import { Link } from 'react-router-dom'
 import { TEAM_TO_TEAM_ABBR } from 'helpers/constants'
 
 
@@ -76,7 +76,15 @@ export default class Home extends Component {
 
       return (
          <Col key={g['Game ID']} xs={12} md={3} style={styles.analysis}>
-          <a href={'/games/'+g['Game ID']}>
+          <Link to={{pathname: '/games/'+g['Game ID'], 
+                state: {
+                         home: g['Home'],
+                         away: g['Away'],
+                         homeRecord: g['Home Record'],
+                         awayRecord: g['Away Record'],
+                         date: g['Date']
+                        }
+                    }}>
             <Row>
               <Col xs={6}>
                 <Image alt={g['Away']} src={awayImageUrl} roundedCircle fluid/>
@@ -88,7 +96,7 @@ export default class Home extends Component {
               <p className='text-center'>
                 {awayAbbr} ({g['Away Record']}) @ {homeAbbr} ({g['Home Record']})
               </p>
-          </a>
+          </Link>
         </Col>
       )
     })

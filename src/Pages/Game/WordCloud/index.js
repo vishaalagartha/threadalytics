@@ -64,9 +64,7 @@ export default class WordCloud extends Component {
         .filter(function(){ 
               return d3.select(this).text() === data.text
         })
-        .style('font-size', function(){
-            return '50px'
-        })
+        .style('font-size', '50px')
         .style('fill', function(){
           data.fill = d3.select(this).style('fill')
           return 'gold'
@@ -78,9 +76,7 @@ export default class WordCloud extends Component {
         .filter(function(){ 
               return d3.select(this).text() === data.text
         })
-        .style('font-size', function(){
-            return data.fontSize
-        })
+        .style('font-size', data.size + 'px')
         .style('fill', function(){
           return data.fill
         })

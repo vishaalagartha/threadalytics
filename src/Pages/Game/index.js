@@ -35,16 +35,8 @@ export default class Game extends Component {
   UNSAFE_componentWillMount() {
     let after = 0
     const id = this.props.match.params['id']
-    const re =  /GAME THREAD: (.*) \((\d+-\d+)\) @ (.*) \((\d+-\d+)\) - \((.*)\)/ 
-    fetch(`https://api.pushshift.io/reddit/search/submission/?subreddit=nba&ids=${id}`)
-        .then(res => res.json())
-        .then(
-        result => {
-          const m = re.exec(result.data[0].title)
-          if(m===null) return null
-          this.setState({...this.state, home: m[1], homeRecord: m[2], away: m[3], awayRecord: m[4], date: m[5], totalComments: result.data[0].num_comments})
-        })
     this.fetchGameComments(id, after, [])
+    this.setState({...this.state, ...this.props.location.state})
   }
 
   addTones(data) {
@@ -140,7 +132,6 @@ export default class Game extends Component {
   }
 
   renderLoadingBar() {
-    
     const p = this.state.totalComments===0 ? 0 : parseInt(this.state.commentCount/this.state.totalComments*100)
     return (
         <Container style={{marginBottom: '1em'}}>
