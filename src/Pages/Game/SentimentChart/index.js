@@ -17,6 +17,19 @@ const tipStyle = {
   pointerEvents: 'none'     
 }
 
+const descripStyle = {
+  position: 'absolute',
+  opacity: '0',
+  padding: '2px',      
+  fontSize: '15px',
+  width: '300px',
+  color: 'white',
+  border: '0px',    
+  borderRadius: '8px',  
+  pointerEvents: 'none',
+  zIndex: 1
+}
+
 export default class SentimentChart extends Component {
 
   constructor(props){
@@ -39,22 +52,23 @@ export default class SentimentChart extends Component {
     const chart = svg.append('g')
                      .attr('transform', `translate(${margin.left}, ${margin.top})`)
     const sentiments = comments.filter(c => 'tones' in c).map(c => {
-      return {timestamp: c.created_utc*1000, compound: c.tones.compound}
+      return {timestamp: c.created_utc*1000, compound: c.tones.compound, body: c.body}
     }).sort((a, b) => a.timestamp-b.timestamp)
 
 
     let data = []
     let last_timestamp =sentiments[0].timestamp+100*1000
     let num_points = 1
-    data.push({'x': sentiments[0].timestamp, 'y': 0})
+    data.push({'x': sentiments[0].timestamp, 'y': 0, comments: []})
     for(let i=0; i<sentiments.length; i++){
       if(sentiments[i].timestamp>last_timestamp){
         last_timestamp+=100*1000
         data[data.length-1].y = data[data.length-1].y/num_points
         num_points = 0
-        data.push({'x': last_timestamp, 'y': 0})
+        data.push({'x': last_timestamp, 'y': 0, 'comments': []})
       }
       data[data.length-1].y+=sentiments[i].compound
+      data[data.length-1].comments.push(sentiments[i].body)
       num_points+=1
     }
 
@@ -87,6 +101,7 @@ export default class SentimentChart extends Component {
        .style('stroke-width', '2px')
 
     let div = d3.select('#sentimentTooltip')
+    let descripDiv = d3.select('#sentimentDescription')
 
     let pointData = data.filter((d, i) => {
       if(i===0 || d.y!==data[i-1].y) return true
@@ -109,11 +124,37 @@ export default class SentimentChart extends Component {
            div.html(htmlStr)  
               .style('left', xScale(d.x)+20+'px')    
               .style('top', yScale(d.y)+70+'px')
+
+
+           htmlStr = '<h3>Comments:</h3>'+d.comments.splice(0, 7).join('</br>')
+           
+           descripDiv.html(htmlStr)
+              .style('left', () => {
+                if(xScale(d.x)>width/2)
+                  return 100+'px'
+                else
+                  return width-300+'px'
+              })    
+              .style('top', height/3+'px')
+
+           descripDiv.transition()   
+             .duration(200)   
+             .style('opacity', 1)
+              .style('background', () => {
+                if(d.y>0) return '#67d463'
+                return '#cf5757'
+              })
+
+
          })         
          .on('mouseout', function(d) {   
             div.transition()   
               .duration(200)   
               .style('opacity', 0)
+
+           descripDiv.transition()   
+             .duration(200)   
+             .style('opacity', 0)
          })
 
     chart.append('text')
@@ -135,6 +176,8 @@ export default class SentimentChart extends Component {
           Sentiment Chart
         </Card.Header>
         <div id='sentimentTooltip' style={tipStyle}>
+        </div>
+        <div id='sentimentDescription' style={descripStyle}>
         </div>
         <svg id='sentimentChart' style={{width:'100%', height:'100%'}}>
         </svg>

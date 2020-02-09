@@ -17,6 +17,20 @@ const tipStyle = {
   pointerEvents: 'none'     
 }
 
+const descripStyle = {
+  position: 'absolute',
+  opacity: '0',
+  padding: '2px',      
+  fontSize: '15px',
+  width: '500px',
+  color: 'white',
+  backgroundColor: '#ffe100',
+  border: '0px',    
+  borderRadius: '8px',  
+  pointerEvents: 'none',
+  zIndex: 1
+}
+
 export default class FrequencyChart extends Component {
 
   constructor(props){
@@ -39,17 +53,22 @@ export default class FrequencyChart extends Component {
     const chart = svg.append('g')
                      .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
-    const timestamps = comments.map(c => c.created_utc*1000).sort()
+    const timestamps = comments.map(c => {
+      return {timestamp: c.created_utc*1000, body: c.body}
+    }).sort((a, b) => a.timestamp-b.timestamp)
+
     let data = []
-    let last_timestamp = timestamps[0]+100*1000
-    data.push({'x': timestamps[0], 'y': 0})
+    let last_timestamp = timestamps[0].timestamp+100*1000
+    data.push({'x': timestamps[0].timestamp, 'y': 0, 'comments': []})
     for(let i=0; i<timestamps.length; i++){
-      if(timestamps[i]>last_timestamp){
+      if(timestamps[i].timestamp>last_timestamp){
         last_timestamp+=100*1000
-        data.push({'x': last_timestamp, 'y': 0})
+        data.push({'x': last_timestamp, 'y': 0, 'comments': []})
       }
       data[data.length-1].y++
+      data[data.length-1].comments.push(timestamps[i].body)
     }
+
 
     const xScale = d3.scaleTime().domain([data[0].x, data[data.length-1].x])
                                  .range([0, width])
@@ -101,6 +120,7 @@ export default class FrequencyChart extends Component {
        .style('stroke-width', '2px')
 
     let div = d3.select('#freqTooltip')
+    let descripDiv = d3.select('#freqDescription')
 
     let pointData = data.filter((d, i) => {
       if(i===0 || d.y!==data[i-1].y) return true
@@ -123,11 +143,30 @@ export default class FrequencyChart extends Component {
            div.html(htmlStr)  
               .style('left', xScale(d.x)+20+'px')    
               .style('top', yScale(d.y)+70+'px')
+
+
+           htmlStr = '<h3>Comments:</h3>'+d.comments.join('</br>')
+           descripDiv.html(htmlStr)
+              .style('left', () => {
+                if(xScale(d.x)>width/2)
+                  return -150+'px'
+                else
+                  return width-100+'px'
+              })    
+              .style('top', 0+'px')
+
+           descripDiv.transition()
+              .duration(200)
+              .style('opacity', 1)
          })         
          .on('mouseout', function(d) {   
             div.transition()   
               .duration(200)   
               .style('opacity', 0)
+           descripDiv.transition()
+              .duration(200)
+              .style('opacity', 0)
+
          })
 
     chart.append('text')
@@ -149,6 +188,8 @@ export default class FrequencyChart extends Component {
           Comment Frequency
         </Card.Header>
         <div id='freqTooltip' style={tipStyle}>
+        </div>
+        <div id='freqDescription' style={descripStyle}>
         </div>
         <svg id='freqChart' style={{width:'100%', height:'100%'}}>
         </svg>
