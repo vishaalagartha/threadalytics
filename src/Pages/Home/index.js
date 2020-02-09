@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Container, Row, Col, Image } from 'react-bootstrap'
 import Header from 'Components/Header'
 import { Link } from 'react-router-dom'
+import { Fade,  Slide } from 'react-reveal'
 import { TEAM_TO_TEAM_ABBR } from 'helpers/constants'
 
 
@@ -108,7 +109,7 @@ export default class Home extends Component {
     return dates.map((d, i) => {
       const games = this.state.games.filter(el => el['Date']===d)
       return (
-          <div key={i}>
+          <Slide left delay={i===0 ? 5000 : 0} duration={1000} key={i}>
             <Row>
                 <Col xs={12}>
                  {d}
@@ -117,7 +118,7 @@ export default class Home extends Component {
              <Row style={{justifyContent: 'space-around'}}>
                {this.renderGamesForDate(games)}
              </Row>
-          </div>
+          </Slide>
        )
     })
   }
@@ -127,34 +128,48 @@ export default class Home extends Component {
       <div>
         <Header/>
         <Container>
-          <Row className='text-center' style={{marginTop: '10%'}}>
-            <Col xs={12}>
-              <h4>
-                Providing you with in-depth insights into r/nba Game Thread commentary from fans.
-              </h4>
-            </Col>
-          </Row>
+          <Fade delay={1000} duration={1000}>
+            <Row className='text-center' style={{marginTop: '10%'}}>
+              <Col xs={12}>
+                <h4>
+                  Providing you with in-depth insights into r/nba Game Thread commentary from fans.
+                </h4>
+              </Col>
+            </Row>
+          </Fade>
           <Row style={{marginTop: '5%'}}>
             <Col xs={12}>
-              <h5 className='text-center' style={{fontSize: '0.8em'}}>
-                THREADALYTICS
-                performs natural language processing to give you a different view of game threads.
-              </h5>
-              <h5 style={{fontFamily: 'Action Italics NBA'}}>
-                <br/>
-                Who was the thread's MVP?
-                <br/>
-                How did people feel throughout the game?
-                <br/>
-                Who dropped the most f-bombs during the game?
-                <br/>
-                What was the saddest comment of the thread?
-              </h5>
+              <Fade delay={2000} duration={1500}>
+                <h5 className='text-center' style={{fontSize: '0.8em'}}>
+                  THREADALYTICS
+                  performs natural language processing to give you a different view of game threads.
+                </h5>
+              </Fade>
+                <h5 style={{fontFamily: 'Action Italics NBA'}}>
+                  <br/>
+                  <Fade top delay={2500} duration={1000}>
+                    Who was the thread's MVP?
+                    <br/>
+                  </Fade>
+                  <Fade top delay={3000} duration={1000}>
+                    How did people feel throughout the game?
+                    <br/>
+                  </Fade>
+                  <Fade top delay={3500} duration={1000}>
+                    Who dropped the most f-bombs during the game?
+                    <br/>
+                  </Fade>
+                  <Fade top delay={4000} duration={1000}>
+                    What was the saddest comment of the thread?
+                  </Fade> 
+                </h5>
             </Col>
           </Row>
-          <h5>
-            Find out now.
-          </h5>
+          <Fade delay={5000}>
+            <h5>
+              Find out now.
+            </h5>
+          </Fade>
           <Col xs={12} style={{margin: '2em 0em 2em 0em'}}>
             {this.renderGames()}
           </Col>

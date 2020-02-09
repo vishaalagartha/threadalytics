@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { Row, Col, Image} from 'react-bootstrap'
+import { Zoom, Fade } from 'react-reveal'
 import {TEAM_TO_TEAM_ABBR} from 'helpers/constants'
 
 const styles = {
   header: {
+    minHeight: '220px',
     background: '#fafafa',
     borderBottom: '1px solid #ccc'
   },
@@ -45,27 +47,33 @@ export default class GameHeader extends Component {
       awayImageUrl = 'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + awayAbbr.toLowerCase() + '.png'
     }
     return (
-      <div style={styles.header}>
-        <Row style={styles.row}>
-          <Col xs={2}>
-            <Image alt={awayAbbr} src={awayImageUrl} fluid roundedCircle/>
-          </Col>
-          <Col xs={6} style={styles.centerColumn} className='text-center'>
-            <h3>
-              {this.props.away} @ {this.props.home}
-            </h3>
-            <h4>
-              {this.props.date}
-            </h4>
-            <h4>
-              r/nba Game Thread Analysis
-            </h4>
-          </Col>
-          <Col xs={2}>
-            <Image alt={homeAbbr} src={homeImageUrl} fluid roundedCircle/>
-          </Col>
-        </Row>
-      </div>
+      <Zoom>
+        <div style={styles.header}>
+          <Row style={styles.row}>
+            <Col xs={2}>
+            <Fade delay={2000} duration={2000}>
+              <Image alt={awayAbbr} src={awayImageUrl} fluid roundedCircle/>
+            </Fade>
+            </Col>
+            <Col xs={6} style={styles.centerColumn} className='text-center'>
+              <h3>
+                {this.props.away} @ {this.props.home}
+              </h3>
+              <h4>
+                {this.props.date}
+              </h4>
+              <h4>
+                r/nba Game Thread Analysis
+              </h4>
+            </Col>
+            <Col xs={2}>
+            <Fade delay={2000} duration={2000}>
+              <Image alt={homeAbbr} src={homeImageUrl} fluid roundedCircle/>
+            </Fade>
+            </Col>
+          </Row>
+        </div>
+      </Zoom>
     )
   }
 }

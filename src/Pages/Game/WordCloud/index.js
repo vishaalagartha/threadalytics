@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import Fade from 'react-reveal'
 import {FaCloud} from 'react-icons/fa'
 import Cloud from 'react-d3-cloud'
 import {stopwords} from './stopwords'
@@ -84,21 +85,23 @@ export default class WordCloud extends Component {
 
   render() {
     return (
-      <div style={{width: '100%', height: '100%'}} id='wordCloud'>
-        <h3>
-          <FaCloud style={{marginRight: '10px'}} />
-          Word Cloud
-        </h3>
-        <Cloud
-          data={this.state.data}
-          fontSizeMapper={d => fontSizeMapper(d, this.state.data.length)}
-          rotate={rotate}
-          onWordMouseOver={this.onWordMouseOver}
-          onWordMouseOut={this.onWordMouseOut}
-          width={this.state.width}
-          style={{'.div > .svg > .text': 'Action Bold NBA !important'}}
-        />
-      </div>
+      <Fade duration={10000}>
+        <div style={{width: '100%', height: '100%'}} id='wordCloud'>
+          <h3>
+            <FaCloud style={{marginRight: '10px'}} />
+            Word Cloud
+          </h3>
+          <Cloud
+            data={this.state.data}
+            fontSizeMapper={d => fontSizeMapper(d, this.state.data.length)}
+            rotate={rotate}
+            onWordMouseOver={this.onWordMouseOver}
+            onWordMouseOut={this.onWordMouseOut}
+            width={this.state.width}
+            style={{'.div > .svg > .text': 'Action Bold NBA !important'}}
+          />
+        </div>
+      </Fade>
     )
   }
 }

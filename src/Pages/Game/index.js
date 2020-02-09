@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Fade from 'react-reveal'
 import vader from 'vader-sentiment'
 import { Container, Col, Row } from 'react-bootstrap'
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar'
@@ -74,31 +75,33 @@ export default class Game extends Component {
   renderStatistics() {
     if(this.state.comments.length===0)
       return (
-        <Container className='text-center' style={{marginBottom: '1em'}}>
-          <Row style={{marginTop: '3em'}}>
-            <Col xs={12}>
-              <h2>
-                This game is not over yet! Please check again once the game is over.
-              </h2>
-            </Col>
-          </Row>
-        </Container>
+          <Container className='text-center' style={{marginBottom: '1em'}}>
+            <Row style={{marginTop: '3em'}}>
+              <Col xs={12}>
+                <h2>
+                  This game is not over yet! Please check again once the game is over.
+                </h2>
+              </Col>
+            </Row>
+          </Container>
       )
     else {
     return (
           <Container className='text-center' style={{marginBottom: '1em'}}>
             <Row style={{marginTop: '1em'}}>
               <Col xs={12} id='wordCloudCol'>
+                <Fade>
                 <WordCloud comments={this.state.comments}/>
+                </Fade>
               </Col>
             </Row>
             <Row style={{marginTop: '1em', height: '400px'}}>
-              <Col xs={12} md={8}>
-                <FrequencyChart comments={this.state.comments}/>
-              </Col>
-              <Col xs={12} md={4} style={window.innerWidth<=760 ? {marginTop: '1em'} : {}}>
-                <GameSummary comments={this.state.comments}/>
-              </Col>
+                <Col xs={12} md={8}>
+                  <FrequencyChart comments={this.state.comments}/>
+                </Col>
+                <Col xs={12} md={4} style={window.innerWidth<=760 ? {marginTop: '1em'} : {}}>
+                  <GameSummary comments={this.state.comments}/>
+                </Col>
             </Row>
             <Row style={{marginTop: '1em'}}>
               <Col xs={12} style={{height: '400px'}}>
@@ -157,9 +160,12 @@ export default class Game extends Component {
         <GameHeader home={this.state.home} homeRecord={this.state.homeRecord} 
                     away={this.state.away} awayRecord={this.state.awayRecord}
                     date={this.state.date}/>
-        {
-          this.state.fetchedComments ? this.renderStatistics() : this.renderLoadingBar()
-        }
+        <Fade delay={1000}>
+            {
+              this.state.fetchedComments ? this.renderStatistics() : this.renderLoadingBar()
+
+            }
+        </Fade>
       </div>
     )
   }
