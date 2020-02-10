@@ -109,7 +109,7 @@ export default class Home extends Component {
     return dates.map((d, i) => {
       const games = this.state.games.filter(el => el['Date']===d)
       return (
-          <Slide left delay={i===0 ? 5000 : 0} duration={1000} key={i}>
+          <Slide left delay={0} duration={1000} key={i}>
             <Row>
                 <Col xs={12}>
                  {d}
