@@ -22,7 +22,7 @@ export default class MVP extends Component {
     this.state.comments.forEach(c => {
       if(!(c.author in authors))
         authors[c.author]=0
-      authors[c.author]++
+      authors[c.author]+=c.score
     })
     let sortable = []
     for(let a in authors)
@@ -33,7 +33,7 @@ export default class MVP extends Component {
     const MvpComments = []
     for(let i=0; i<this.state.comments.length; i++){
       const c = this.state.comments[i]
-      if(c.author===MVP)
+      if(c.author===MVP && c.score>0)
         MvpComments.push(c.body)
       if(MvpComments.length>5) break
     }
@@ -41,7 +41,7 @@ export default class MVP extends Component {
     return (
       <div>
         <a href={'https://www.reddit.com/user/'+MVP}>u/{MVP}</a>
-        <p>Made {sortable[0][1]} comments including:</p>
+        <p>scored {sortable[0][1]} with comments like:</p>
         {
           MvpComments.map((c, i) => {
             return (
@@ -72,7 +72,7 @@ export default class MVP extends Component {
       return (
         <div key={el}>
         {i+2}) <a href={'https://www.reddit.com/user/'+el[0]}>u/{el[0]}</a>
-          <p>Activity: {el[1]}</p>
+          <p>Score: {el[1]}</p>
         </div>
       )
     })

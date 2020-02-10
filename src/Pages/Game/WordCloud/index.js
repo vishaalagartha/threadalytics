@@ -86,7 +86,7 @@ export default class WordCloud extends Component {
   render() {
     return (
       <Fade duration={10000}>
-        <div style={{width: '100%', height: '100%'}} id='wordCloud'>
+        <div style={{width: '100%', height: '100%', background: 'white'}} id='wordCloud'>
           <h3>
             <FaCloud style={{marginRight: '10px'}} />
             Word Cloud

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Row, Col, Image} from 'react-bootstrap'
 import { Zoom, Fade } from 'react-reveal'
-import {TEAM_TO_TEAM_ABBR} from 'helpers/constants'
+import {TEAM_TO_TEAM_ABBR, colors} from 'helpers/constants'
 
-const styles = {
+let styles = {
   header: {
     minHeight: '220px',
     background: '#fafafa',
@@ -45,6 +45,9 @@ export default class GameHeader extends Component {
       awayAbbr = TEAM_TO_TEAM_ABBR[away.toUpperCase()]
       homeImageUrl = 'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + homeAbbr.toLowerCase() + '.png'
       awayImageUrl = 'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + awayAbbr.toLowerCase() + '.png'
+    }
+    if(this.props.team!==null){
+      styles.header.background = colors[this.props.team].main_color
     }
     return (
       <Zoom>

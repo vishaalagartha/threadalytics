@@ -75,8 +75,8 @@ export default class Game extends Component {
   renderStatistics() {
     if(this.state.comments.length===0)
       return (
-          <Container className='text-center' style={{marginBottom: '1em'}}>
-            <Row style={{marginTop: '3em'}}>
+          <Container className='text-center' style={{paddingBottom: '1em'}}>
+            <Row style={{paddingTop: '3em'}}>
               <Col xs={12}>
                 <h2>
                   This game is not over yet! Please check again once the game is over.
@@ -87,45 +87,45 @@ export default class Game extends Component {
       )
     else {
     return (
-          <Container className='text-center' style={{marginBottom: '1em'}}>
-            <Row style={{marginTop: '1em'}}>
+          <Container className='text-center' style={{paddingBottom: '1em'}}>
+            <Row style={{paddingTop: '1em'}}>
               <Col xs={12} id='wordCloudCol'>
                 <Fade>
                 <WordCloud comments={this.state.comments}/>
                 </Fade>
               </Col>
             </Row>
-            <Row style={{marginTop: '1em', height: '400px'}}>
+            <Row style={{paddingTop: '1em', height: '400px'}}>
                 <Col xs={12} md={8}>
                   <FrequencyChart comments={this.state.comments}/>
                 </Col>
-                <Col xs={12} md={4} style={window.innerWidth<=760 ? {marginTop: '1em'} : {}}>
+                <Col xs={12} md={4} style={window.innerWidth<=760 ? {paddingTop: '1em'} : {}}>
                   <GameSummary comments={this.state.comments}/>
                 </Col>
             </Row>
-            <Row style={{marginTop: '1em'}}>
+            <Row style={{paddingTop: '1em'}}>
               <Col xs={12} style={{height: '400px'}}>
                 <SentimentChart comments={this.state.comments}/>
               </Col>
             </Row>
-            <Row style={{marginTop: '1em'}}>
+            <Row style={{paddingTop: '1em'}}>
               <Col xs={12} md={8}>
                 <FStatistics comments={this.state.comments}/>
               </Col>
-              <Col xs={12} md={4} style={window.innerWidth<=760 ? {marginTop: '1em'} : {}}>
+              <Col xs={12} md={4} style={window.innerWidth<=760 ? {paddingTop: '1em'} : {}}>
                 <RefStatistics comments={this.state.comments}/>
               </Col>
             </Row>
-            <Row style={{marginTop: '1em'}}>
+            <Row style={{paddingTop: '1em'}}>
               <Col xs={12}>
                 <MVP comments={this.state.comments}/>
               </Col>
             </Row>
-            <Row style={{marginTop: '1em', marginBottom: '2em'}}>
+            <Row style={{paddingTop: '1em', paddingBottom: '2em'}}>
               <Col xs={12} md={6}>
                 <PositiveAuthor comments={this.state.comments}/>
               </Col>
-              <Col xs={12} md={6} style={window.innerWidth<=760 ? {margin: '1em 0em 3em 0em'} : {}}>
+              <Col xs={12} md={6} style={window.innerWidth<=760 ? {padding: '1em 0em 3em 0em'} : {}}>
                 <NegativeAuthor comments={this.state.comments}/>
               </Col>
             </Row>
@@ -137,13 +137,13 @@ export default class Game extends Component {
   renderLoadingBar() {
     const p = this.state.totalComments===0 ? 0 : parseInt(this.state.commentCount/this.state.totalComments*100)
     return (
-        <Container style={{marginBottom: '1em'}}>
-          <Row style={{marginTop: '1em', justifyContent: 'center'}}>
+        <Container>
+          <Row style={{paddingTop: '1em', justifyContent: 'center'}}>
             <h3>
               Calculating statistics...
             </h3>
           </Row>
-          <Row style={{marginTop: '3em', justifyContent: 'center'}}>
+          <Row style={{paddingTop: '3em', justifyContent: 'center'}}>
             <Col xs={3}>
               <CircularProgressbarWithChildren value={p} text={`${p}%`}>
               </CircularProgressbarWithChildren>
@@ -154,18 +154,30 @@ export default class Game extends Component {
   }
 
   render() {
+    let backgroundImage = this.props.match.params['abbr'] 
+    if(backgroundImage!==null){
+      backgroundImage= `url(${'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + backgroundImage.toLowerCase() + '.png'})`
+    }
+    const containerStyles = {
+      backgroundImage,
+      backgroundPosition: 'center',
+    }
     return (
       <div>
         <Header/>
         <GameHeader home={this.state.home} homeRecord={this.state.homeRecord} 
                     away={this.state.away} awayRecord={this.state.awayRecord}
-                    date={this.state.date}/>
-        <Fade delay={1000}>
-            {
-              this.state.fetchedComments ? this.renderStatistics() : this.renderLoadingBar()
+                    date={this.state.date} team={this.props.match.params['abbr']}/>
+        <div style={containerStyles}>
+          <div style={{backgroundColor: 'rgba(0,0,0,0.4)', paddingBottom: '1em'}}>
+            <Fade delay={1000} >
+                {
+                  this.state.fetchedComments ? this.renderStatistics() : this.renderLoadingBar()
 
-            }
-        </Fade>
+                }
+            </Fade>
+          </div>
+        </div>
       </div>
     )
   }
