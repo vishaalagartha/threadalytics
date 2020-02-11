@@ -47,7 +47,6 @@ export default class Team extends Component {
 
   addGames(data) {
     const newGames = data.map(d => {
-      console.log(d)
       let opponent = null
       for(let i=0; i<Object.keys(TEAM_TO_SUBREDDIT).length; i++){
         const l = Object.keys(TEAM_TO_SUBREDDIT)[i].split(' ')
