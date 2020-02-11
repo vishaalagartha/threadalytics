@@ -34,7 +34,8 @@ export default class Team extends Component {
     }
   }
 
-  UNSAFE_componentWillMount() {
+
+  componentDidMount(){
     let after = 1571731200
     let before = parseInt(+ new Date()/1000)
     const teamAbbr = this.props.match.params.abbr
@@ -73,7 +74,8 @@ export default class Team extends Component {
         'Away': opponent,
         'Date': `${month} ${dayNum}, ${year}`,
         'Title': d.title,
-        'Game ID': d.id
+        'Game ID': d.id,
+        'totalComments': d.num_comments
       }
     }).filter(g => g!==null)
 
@@ -115,16 +117,18 @@ export default class Team extends Component {
                          away: g['Away'],
                          homeRecord: g['Home Record'],
                          awayRecord: g['Away Record'],
-                         date: g['Date']
+                         date: g['Date'],
+                         totalComments: g['totalComments']
                         }
                     }}>
             <Row>
-              <Col xs={3}>
+              <Col xs={6} md={3}>
                 <Image alt={g['Away']} src={awayImageUrl} roundedCircle fluid/>
               </Col>
-              <Col xs={3}>
+              <Col xs={6} md={3}>
                 <Image alt={g['Home']} src={homeImageUrl} roundedCircle fluid/>
               </Col>
+              { window.innerWidth>760 ? 
               <Col xs={6} style={{marginTop: '1em'}}>
                 <h3>
                   Post Title:
@@ -132,6 +136,8 @@ export default class Team extends Component {
                   {g['Title']}
                 </h3>
               </Col>
+              : null
+              }
             </Row>
               <p className='text-center'>
                 {awayAbbr} vs. {homeAbbr}

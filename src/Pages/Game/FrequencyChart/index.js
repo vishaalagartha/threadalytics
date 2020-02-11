@@ -127,47 +127,49 @@ export default class FrequencyChart extends Component {
       return false
      })
 
-    chart.selectAll('.point')
-         .data(pointData)
-         .enter()
-         .append('circle')
-         .attr('class', 'point')
-         .attr('r', 3)
-         .attr('cx', d => xScale(d.x))
-         .attr('cy', d => yScale(d.y))
-         .on('mouseover', function(d) {   
-           div.transition()   
-             .duration(200)   
-             .style('opacity', 1)
-           let htmlStr = `Time: ${d3.timeFormat('%I:%M %p')(d.x)}<br/>Comments: ${d.y}`
-           div.html(htmlStr)  
-              .style('left', xScale(d.x)+20+'px')    
-              .style('top', yScale(d.y)+70+'px')
+    if(window.innerWidth>760) {
+      chart.selectAll('.point')
+           .data(pointData)
+           .enter()
+           .append('circle')
+           .attr('class', 'point')
+           .attr('r', 3)
+           .attr('cx', d => xScale(d.x))
+           .attr('cy', d => yScale(d.y))
+           .on('mouseover', function(d) {   
+             div.transition()   
+               .duration(200)   
+               .style('opacity', 1)
+             let htmlStr = `Time: ${d3.timeFormat('%I:%M %p')(d.x)}<br/>Comments: ${d.y}`
+             div.html(htmlStr)  
+                .style('left', xScale(d.x)+20+'px')    
+                .style('top', yScale(d.y)+70+'px')
 
 
-           htmlStr = '<h3>Comments:</h3>'+d.comments.join('</br>')
-           descripDiv.html(htmlStr)
-              .style('left', () => {
-                if(xScale(d.x)>width/2)
-                  return -150+'px'
-                else
-                  return width-100+'px'
-              })    
-              .style('top', 0+'px')
+             htmlStr = '<h3>Comments:</h3>'+d.comments.join('</br>')
+             descripDiv.html(htmlStr)
+                .style('left', () => {
+                  if(xScale(d.x)>width/2)
+                    return -150+'px'
+                  else
+                    return width-100+'px'
+                })    
+                .style('top', 0+'px')
 
-           descripDiv.transition()
-              .duration(200)
-              .style('opacity', 1)
-         })         
-         .on('mouseout', function(d) {   
-            div.transition()   
-              .duration(200)   
-              .style('opacity', 0)
-           descripDiv.transition()
-              .duration(200)
-              .style('opacity', 0)
+             descripDiv.transition()
+                .duration(200)
+                .style('opacity', 1)
+           })         
+           .on('mouseout', function(d) {   
+              div.transition()   
+                .duration(200)   
+                .style('opacity', 0)
+             descripDiv.transition()
+                .duration(200)
+                .style('opacity', 0)
 
-         })
+           })
+    }
 
     chart.append('text')
          .text('Time')

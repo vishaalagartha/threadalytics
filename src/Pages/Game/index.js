@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import Fade from 'react-reveal'
 import vader from 'vader-sentiment'
 import { Container, Col, Row } from 'react-bootstrap'
-import { CircularProgressbarWithChildren } from 'react-circular-progressbar'
-import 'react-circular-progressbar/dist/styles.css'
 import Header from 'Components/Header'
 import GameHeader from 'Components/GameHeader'
 import GameSummary from './Summary'
@@ -15,6 +13,8 @@ import NegativeAuthor from './NegativeAuthor'
 import FrequencyChart from './FrequencyChart'
 import SentimentChart from './SentimentChart'
 import WordCloud from './WordCloud'
+import { RingLoader } from 'react-spinners'
+import { colors } from 'helpers/constants'
 
 export default class Game extends Component { 
 
@@ -28,12 +28,11 @@ export default class Game extends Component {
       date: null,
       fetchedComments: false,
       commentCount: 0,
-      totalComments: 0,
       comments: []
     }
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount(){
     let after = 0
     const id = this.props.match.params['id']
     this.fetchGameComments(id, after, [])
@@ -95,7 +94,7 @@ export default class Game extends Component {
                 </Fade>
               </Col>
             </Row>
-            <Row style={{paddingTop: '1em', height: '400px'}}>
+            <Row style={{paddingTop: '1em', marginBottom: '1em', height: '400px'}}>
                 <Col xs={12} md={8}>
                   <FrequencyChart comments={this.state.comments}/>
                 </Col>
@@ -103,7 +102,7 @@ export default class Game extends Component {
                   <GameSummary comments={this.state.comments}/>
                 </Col>
             </Row>
-            <Row style={{paddingTop: '1em'}}>
+            <Row style={{marginTop: '1em'}}>
               <Col xs={12} style={{height: '400px'}}>
                 <SentimentChart comments={this.state.comments}/>
               </Col>
@@ -134,33 +133,16 @@ export default class Game extends Component {
     }
   }
 
-  renderLoadingBar() {
-    const p = this.state.totalComments===0 ? 0 : parseInt(this.state.commentCount/this.state.totalComments*100)
-    return (
-        <Container>
-          <Row style={{paddingTop: '1em', justifyContent: 'center'}}>
-            <h3>
-              Calculating statistics...
-            </h3>
-          </Row>
-          <Row style={{paddingTop: '3em', justifyContent: 'center'}}>
-            <Col xs={3}>
-              <CircularProgressbarWithChildren value={p} text={`${p}%`}>
-              </CircularProgressbarWithChildren>
-            </Col>
-          </Row>
-        </Container>
-    )
-  }
-
   render() {
     let backgroundImage = this.props.match.params['abbr'] 
-    if(backgroundImage!==null){
+    let loadingColor = 'grey'
+    if(backgroundImage!==undefined){
+      loadingColor = colors[backgroundImage].main_color
       backgroundImage= `url(${'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + backgroundImage.toLowerCase() + '.png'})`
     }
     const containerStyles = {
       backgroundImage,
-      backgroundPosition: 'center',
+      backgroundPosition: 'top',
     }
     return (
       <div>
@@ -168,16 +150,20 @@ export default class Game extends Component {
         <GameHeader home={this.state.home} homeRecord={this.state.homeRecord} 
                     away={this.state.away} awayRecord={this.state.awayRecord}
                     date={this.state.date} team={this.props.match.params['abbr']}/>
-        <div style={containerStyles}>
-          <div style={{backgroundColor: 'rgba(0,0,0,0.4)', paddingBottom: '1em'}}>
-            <Fade delay={1000} >
+          <div style={containerStyles}>
+            <Fade delay={10000} duration={2000}>
                 {
-                  this.state.fetchedComments ? this.renderStatistics() : this.renderLoadingBar()
-
+                  this.state.fetchedComments ? this.renderStatistics() : 
+                  <div style={{marginLeft: window.innerWidth/2-200}}>
+                    <RingLoader
+                      size={400}
+                      color={loadingColor}
+                      loading={true}
+                    />
+                  </div>
                 }
             </Fade>
           </div>
-        </div>
       </div>
     )
   }
