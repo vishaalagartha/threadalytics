@@ -95,7 +95,7 @@ export default class Team extends Component {
             })
           this.addGames(data)
           const nResults = result.data.length 
-          if(nResults===25) {
+          if(nResults===25 && data.length>0) {
             before = data[data.length-1].created_utc
             this.fetchGames(after, before, teamSubreddit)
           }
