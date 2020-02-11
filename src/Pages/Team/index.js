@@ -47,6 +47,7 @@ export default class Team extends Component {
 
   addGames(data) {
     const newGames = data.map(d => {
+      console.log(d)
       let opponent = null
       for(let i=0; i<Object.keys(TEAM_TO_SUBREDDIT).length; i++){
         const l = Object.keys(TEAM_TO_SUBREDDIT)[i].split(' ')
@@ -83,7 +84,12 @@ export default class Team extends Component {
   }
 
   fetchGames(after, before, teamSubreddit){
-    fetch(`https://api.pushshift.io/reddit/search/submission/?subreddit=${teamSubreddit}&after=${after}&before=${before}&q=game%20thread&sort=desc`)
+    let query = `game%20thread`
+    if(teamSubreddit==='NOLAPelicans')
+      query=`GDT`
+    else if(teamSubreddit==='CharlotteHornets')
+      query=`Charlotte%20Hornets`
+    fetch(`https://api.pushshift.io/reddit/search/submission/?subreddit=${teamSubreddit}&after=${after}&before=${before}&q=${query}&sort=desc`)
         .then(res => res.json())
         .then(
         result => {
