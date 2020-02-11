@@ -51,7 +51,7 @@ export default class Team extends Component {
       for(let i=0; i<Object.keys(TEAM_TO_SUBREDDIT).length; i++){
         const l = Object.keys(TEAM_TO_SUBREDDIT)[i].split(' ')
         const s = l[l.length-1]
-        if(d.title.includes(s)){
+        if(d.title.toLowerCase().includes(s.toLowerCase())){
           const team = Object.keys(TEAM_TO_SUBREDDIT)[i]
           if(team!==this.state.team){
             opponent = team
