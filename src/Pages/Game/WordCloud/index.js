@@ -68,7 +68,7 @@ export default class WordCloud extends Component {
         .style('font-size', '50px')
         .style('fill', function(){
           data.fill = d3.select(this).style('fill')
-          return 'gold'
+          return  '#b30000'
         })
   }
 

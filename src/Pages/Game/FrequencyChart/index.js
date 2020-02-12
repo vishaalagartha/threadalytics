@@ -24,7 +24,7 @@ const descripStyle = {
   fontSize: '15px',
   width: '500px',
   color: 'white',
-  backgroundColor: '#ffe100',
+  backgroundColor: '#003399',
   border: '0px',    
   borderRadius: '8px',  
   pointerEvents: 'none',
@@ -54,7 +54,7 @@ export default class FrequencyChart extends Component {
                      .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
     const timestamps = comments.map(c => {
-      return {timestamp: c.created_utc*1000, body: c.body}
+      return {timestamp: c.created_utc*1000, body: c.body, score: c.score}
     }).sort((a, b) => a.timestamp-b.timestamp)
 
     let data = []
@@ -66,7 +66,7 @@ export default class FrequencyChart extends Component {
         data.push({'x': last_timestamp, 'y': 0, 'comments': []})
       }
       data[data.length-1].y++
-      data[data.length-1].comments.push(timestamps[i].body)
+      data[data.length-1].comments.push({body: timestamps[i].body, score: timestamps[i].score})
     }
 
 
@@ -145,8 +145,11 @@ export default class FrequencyChart extends Component {
                 .style('left', xScale(d.x)+20+'px')    
                 .style('top', yScale(d.y)+70+'px')
 
+             const scores = d.comments.map(el => el.score).sort().reverse().splice(0, 5)
+             const threshold = scores[scores.length-1]
+             const comments = d.comments.filter(el => el.score>=threshold).splice(0, 5).map(el => el.body)
 
-             htmlStr = '<h3>Comments:</h3>'+d.comments.join('</br>')
+             htmlStr = '<h3>Comments:</h3>'+comments.join('</br>')
              descripDiv.html(htmlStr)
                 .style('left', () => {
                   if(xScale(d.x)>width/2)

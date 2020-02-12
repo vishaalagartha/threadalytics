@@ -54,6 +54,7 @@ export default class Game extends Component {
       .then(
       result => {
         const data = result.data
+        console.log(data)
         if(data.length===0){
           this.setState({...this.state, fetchedComments: true, comments})
           return
@@ -108,14 +109,6 @@ export default class Game extends Component {
               </Col>
             </Row>
             <Row style={{paddingTop: '1em'}}>
-              <Col xs={12} md={8}>
-                <FStatistics comments={this.state.comments}/>
-              </Col>
-              <Col xs={12} md={4} style={window.innerWidth<=760 ? {paddingTop: '1em'} : {}}>
-                <RefStatistics comments={this.state.comments}/>
-              </Col>
-            </Row>
-            <Row style={{paddingTop: '1em'}}>
               <Col xs={12}>
                 <MVP comments={this.state.comments}/>
               </Col>
@@ -126,6 +119,14 @@ export default class Game extends Component {
               </Col>
               <Col xs={12} md={6} style={window.innerWidth<=760 ? {padding: '1em 0em 3em 0em'} : {}}>
                 <NegativeAuthor comments={this.state.comments}/>
+              </Col>
+            </Row>
+            <Row style={{paddingTop: '1em'}}>
+              <Col xs={12} md={8}>
+                <FStatistics comments={this.state.comments}/>
+              </Col>
+              <Col xs={12} md={4} style={window.innerWidth<=760 ? {paddingTop: '1em'} : {}}>
+                <RefStatistics comments={this.state.comments}/>
               </Col>
             </Row>
           </Container>
