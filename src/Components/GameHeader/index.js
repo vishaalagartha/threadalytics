@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col, Image} from 'react-bootstrap'
 import { Zoom, Fade } from 'react-reveal'
-import {TEAM_TO_TEAM_ABBR, colors} from 'helpers/constants'
+import {TEAM_TO_TEAM_ABBR, TEAM_TO_SUBREDDIT, colors} from 'helpers/constants'
 
 let styles = {
   header: {
@@ -28,6 +28,7 @@ export default class GameHeader extends Component {
       awayRecord: null,
       date: null,
       dataEndpoint: null,
+      team: null
     }
   }
 
@@ -70,9 +71,16 @@ export default class GameHeader extends Component {
                 <h4>
                   {this.props.date}
                 </h4>
-                <h4>
-                  r/nba Game Thread Analysis
-                </h4>
+                {
+                  this.props.team===undefined ? 
+                  <h4>
+                      r/nba Game Thread Analysis
+                  </h4>
+                  :
+                  <h4>
+                  {TEAM_TO_SUBREDDIT[this.props.home]} Game Thread Analysis
+                  </h4>
+                }
               </div>
               :
               <div>
@@ -82,9 +90,16 @@ export default class GameHeader extends Component {
                 <p>
                   {this.props.date}
                 </p>
-                <p>
-                  r/nba Game Thread Analysis
-                </p>
+                {
+                  this.props.team===undefined ? 
+                  <p>
+                      r/nba Game Thread Analysis
+                  </p>
+                  :
+                  <p>
+                  {TEAM_TO_SUBREDDIT[this.props.home]} Game Thread Analysis
+                  </p>
+                }
               </div>
             }
             </Col>
