@@ -108,11 +108,16 @@ export default class Game extends Component {
                 <SentimentChart comments={this.state.comments}/>
               </Col>
             </Row>
-            <Row style={{marginTop: '1em'}}>
-              <Col xs={12} style={{height: '600px'}}>
-                <FlairStats comments={this.state.comments}/>
-              </Col>
-            </Row>
+            { 
+              this.props.match.params['abbr']===undefined ?
+              <Row style={{marginTop: '1em'}}>
+                <Col xs={12} style={{height: '600px'}}>
+                  <FlairStats comments={this.state.comments}/>
+                </Col>
+              </Row>
+              :
+              null
+            }
             <Row style={{paddingTop: '1em'}}>
               <Col xs={12}>
                 <MVP comments={this.state.comments}/>

@@ -119,6 +119,7 @@ export default class SentimentChart extends Component {
           fixedFlairs[newKey].numComments+=flairs[k1].numComments
           fixedFlairs[newKey].numRefComplaints+=flairs[k1].numRefComplaints
           fixedFlairs[newKey].numFBombs+=flairs[k1].numFBombs
+          break
         }
       }
     }
