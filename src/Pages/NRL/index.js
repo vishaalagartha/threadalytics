@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Row, Col, Image } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import Header from 'Components/Header'
 import { Link } from 'react-router-dom'
 import { Fade,  Slide } from 'react-reveal'

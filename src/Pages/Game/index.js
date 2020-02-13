@@ -12,6 +12,7 @@ import PositiveAuthor from './PositiveAuthor'
 import NegativeAuthor from './NegativeAuthor'
 import FrequencyChart from './FrequencyChart'
 import SentimentChart from './SentimentChart'
+import FlairStats from './FlairStats'
 import WordCloud from './WordCloud'
 import { RingLoader } from 'react-spinners'
 import { colors } from 'helpers/constants'
@@ -54,7 +55,6 @@ export default class Game extends Component {
       .then(
       result => {
         const data = result.data
-        console.log(data)
         if(data.length===0){
           this.setState({...this.state, fetchedComments: true, comments})
           return
@@ -106,6 +106,11 @@ export default class Game extends Component {
             <Row style={{marginTop: '1em'}}>
               <Col xs={12} style={{height: '400px'}}>
                 <SentimentChart comments={this.state.comments}/>
+              </Col>
+            </Row>
+            <Row style={{marginTop: '1em'}}>
+              <Col xs={12} style={{height: '600px'}}>
+                <FlairStats comments={this.state.comments}/>
               </Col>
             </Row>
             <Row style={{paddingTop: '1em'}}>
