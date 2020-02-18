@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Card} from 'react-bootstrap'
 import {FaChartLine} from 'react-icons/fa'
 import * as d3 from 'd3'
+import {getPbp} from 'helpers/pbp'
 
 const tipStyle = {
   position: 'absolute',
@@ -41,6 +42,7 @@ export default class FrequencyChart extends Component {
   }
   
   componentDidMount(){
+    getPbp()
     this.setState({...this.props})
     this.drawChart(this.props.comments)
   }
