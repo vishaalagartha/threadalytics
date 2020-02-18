@@ -94,7 +94,7 @@ export default class Team extends Component {
         result => {
           const data = result.data.filter(el =>
             {
-              if(el.title.toLowerCase().includes('post') || el.title.toLowerCase().includes('pre'))
+              if(el.title.toLowerCase().includes('post') || el.title.toLowerCase().includes('pre') || el.title.toLowerCase().includes('discussion'))
                 return false
               return true
             })
