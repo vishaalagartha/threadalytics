@@ -126,7 +126,7 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        <Header/>
+        <Header fromTeam={null}/>
         <Container>
           <Fade delay={1000} duration={1000}>
             <Row className='text-center' style={{marginTop: '10%'}}>

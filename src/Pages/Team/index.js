@@ -174,10 +174,18 @@ export default class Team extends Component {
   }
 
   render() {
+    let backgroundImage = this.props.match.params['abbr'] 
+    if(backgroundImage!==undefined){
+      backgroundImage= `url(${'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + backgroundImage.toLowerCase() + '.png'})`
+    }
+    const containerStyles = {
+      backgroundImage,
+      backgroundPosition: 'top',
+    }
     return (
-      <div>
-        <Header/>
-        <Container>
+      <div style={containerStyles}>
+        <Header fromTeam={this.props.match.params.abbr}/>
+        <Container style={{backgroundColor: 'white'}} className='rounded'>
           <Col xs={12} style={{margin: '2em 0em 2em 0em'}}>
             {this.renderGames()}
           </Col>

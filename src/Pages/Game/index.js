@@ -157,7 +157,7 @@ export default class Game extends Component {
     }
     return (
       <div>
-        <Header/>
+        <Header fromTeam={this.params.match.params['abbr']}/>
         <GameHeader home={this.state.home} homeRecord={this.state.homeRecord} 
                     away={this.state.away} awayRecord={this.state.awayRecord}
                     date={this.state.date} team={this.props.match.params['abbr']}/>

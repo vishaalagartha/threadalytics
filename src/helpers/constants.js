@@ -130,16 +130,34 @@ export const TEAM_TO_SUBREDDIT = {'Golden State Warriors': 'r/warriors',
 
 export const colors = {'ATL': {'main_color': 'red', 'secondary_color': 'white'}, 'BKN': {'main_color': 'black', 'secondary_color': 'white'}, 'BOS': {'main_color': 'green', 'secondary_color': 'white'}, 'CHA': {'main_color': 'purple', 'secondary_color': 'teal'}, 'CHI': {'main_color': 'red', 'secondary_color': 'black'}, 'CLE': {'main_color': 'wine', 'secondary_color': 'gold'}, 'DAL': {'main_color': 'blue', 'secondary_color': 'silver'}, 'DEN': {'main_color': 'blue', 'secondary_color': 'gold'}, 'DET': {'main_color': 'blue', 'secondary_color': 'red'}, 'GSW': {'main_color': 'gold', 'secondary_color': 'blue'}, 'HOU': {'main_color': 'red', 'secondary_color': 'silver'}, 'IND': {'main_color': 'blue', 'secondary_color': 'gold'}, 'LAC': {'main_color': 'red', 'secondary_color': 'blue'}, 'LAL': {'main_color': 'purple', 'secondary_color': 'gold'}, 'MEM': {'main_color': 'midnightBlue', 'secondary_color': 'bealeStreetBlue'}, 'MIA': {'main_color': 'red', 'secondary_color': 'black'}, 'MIL': {'main_color': 'green', 'secondary_color': 'cream'}, 'MIN': {'main_color': 'blue', 'secondary_color': 'green'}, 'NOP': {'main_color': 'blue', 'secondary_color': 'red'}, 'NYK': {'main_color': 'blue', 'secondary_color': 'orange'}, 'OKC': {'main_color': 'blue', 'secondary_color': 'orange'}, 'ORL': {'main_color': 'blue', 'secondary_color': 'silver'}, 'PHI': {'main_color': 'blue', 'secondary_color': 'red'}, 'PHX': {'main_color': 'orange', 'secondary_color': 'purple'}, 'POR': {'main_color': 'red', 'secondary_color': 'black'}, 'SAC': {'main_color': 'purple', 'secondary_color': 'silver'}, 'SAS': {'main_color': 'silver', 'secondary_color': 'black'}, 'TOR': {'main_color': 'red', 'secondary_color': 'silver'}, 'UTA': {'main_color': 'navy', 'secondary_color': 'yellow'}, 'WAS': {'main_color': 'navy', 'secondary_color': 'red'}}
 
-export const getRandomColor = (t1, t2) => {
-  const p = Math.random()
-  const t1Abbr = TEAM_TO_TEAM_ABBR[t1]
-  const t2Abbr = TEAM_TO_TEAM_ABBR[t2]
-  if(p<0.35)
-    return colors[t1Abbr]['main_color']
-  else if(p<0.7)
-    return colors[t2Abbr]['main_color']
-  else if(p<0.85)
-    return colors[t1Abbr]['secondary_color']
-  else
-    return colors[t2Abbr]['secondary_color']
-}
+export const leaderboardEndpoints = {'AtlantaHawks': 'https://api.myjson.com/bins/noiy0',
+   'CharlotteHornets': 'https://api.myjson.com/bins/137xu0',
+   'DetroitPistons': 'https://api.myjson.com/bins/dmatk',
+   'GoNets': 'https://api.myjson.com/bins/1c5fwo',
+   'LAClippers': 'https://api.myjson.com/bins/17zeo8',
+   'MkeBucks': 'https://api.myjson.com/bins/14vybs',
+   'NBASpurs': 'https://api.myjson.com/bins/ibmi0',
+   'NOLAPelicans': 'https://api.myjson.com/bins/1fq1jc',
+   'NYKnicks': 'https://api.myjson.com/bins/x5bgo',
+   'OrlandoMagic': 'https://api.myjson.com/bins/1cqvig',
+   'Thunder': 'https://api.myjson.com/bins/yc6o8',
+   'UtahJazz': 'https://api.myjson.com/bins/8797s',
+   'bostonceltics': 'https://api.myjson.com/bins/162tjc',
+   'chicagobulls': 'https://api.myjson.com/bins/vyg94',
+   'clevelandcavs': 'https://api.myjson.com/bins/lu2yw',
+   'denvernuggets': 'https://api.myjson.com/bins/yzrfs',
+   'heat': 'https://api.myjson.com/bins/1g9bzc',
+   'kings': 'https://api.myjson.com/bins/9zk14',
+   'lakers': 'https://api.myjson.com/bins/1bdktk',
+   'mavericks': 'https://api.myjson.com/bins/bppoo',
+   'memphisgrizzlies': 'https://api.myjson.com/bins/glgug',
+   'nba': 'https://api.myjson.com/bins/17hfao',
+   'pacers': 'https://api.myjson.com/bins/8utzc',
+   'ripcity': 'https://api.myjson.com/bins/kpcx4',
+   'rockets': 'https://api.myjson.com/bins/18gjyg',
+   'sixers': 'https://api.myjson.com/bins/179oqw',
+   'suns': 'https://api.myjson.com/bins/fcgh4',
+   'timberwolves': 'https://api.myjson.com/bins/ove5k',
+   'torontoraptors': 'https://api.myjson.com/bins/1cml6w',
+   'warriors': 'https://api.myjson.com/bins/sx52g',
+   'washingtonwizards': 'https://api.myjson.com/bins/pgtrc'}
