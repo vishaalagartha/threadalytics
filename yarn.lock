@@ -4090,6 +4090,10 @@ file-loader@4.3.0:
     loader-utils "^1.2.3"
     schema-utils "^2.5.0"
 
+file-saver@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.2.tgz#06d6e728a9ea2df2cce2f8d9e84dfcdc338ec17a"
+
 file-uri-to-path@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz#553a7b8446ff6f684359c445f1e37a05dacc33dd"
@@ -7881,6 +7885,12 @@ react-bootstrap-table-next@^3.3.5:
     classnames "^2.2.5"
     react-transition-group "2.5.3"
     underscore "1.9.1"
+
+react-bootstrap-table2-toolkit@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-table2-toolkit/-/react-bootstrap-table2-toolkit-2.1.2.tgz#75c28b97e16961ee1433018b4f0c6b17261e167a"
+  dependencies:
+    file-saver "2.0.2"
 
 react-bootstrap@^1.0.0-beta.16:
   version "1.0.0-beta.16"

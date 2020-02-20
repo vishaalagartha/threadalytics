@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import { Container, Row } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import { FaCaretUp, FaCaretDown } from 'react-icons/fa'
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import BootstrapTable from 'react-bootstrap-table-next'
 import Header from 'Components/Header'
 import { TEAM_ABBR_TO_TEAM, TEAM_TO_SUBREDDIT, leaderboardEndpoints } from 'helpers/constants'
+import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit'
+
+const { ToggleList } = ColumnToggle
 const sortFunction = (order) => {
       if(order===undefined)
         return (<span><FaCaretUp/><FaCaretDown/></span>)
@@ -17,8 +20,11 @@ const sortFunction = (order) => {
 const columns = [{
     dataField: 'author',
     text: 'Author',
-    formatter: (cell, row) =>
+    formatter: (cell, row) => {
+      return (
       <a href={`https://www.reddit.com/user/${cell}`}>/u/{cell}</a>
+      )
+    }
 }, {
     dataField: 'compound',
     text: 'Compound Score',
@@ -116,13 +122,85 @@ export default class Leaderboard extends Component {
 
     const dateString = `${month} ${dayNum}, ${year} at ` + date.toLocaleTimeString('en-US', options)
 
+
     return (
-          <div style={{marginTop: '10%'}}>
-            <Row style={{marginLeft: '10px'}}>
-              <h3>
-                Last Updated on {dateString}
-              </h3>
+          <div style={{marginTop: '10px'}}>
+            <Row>
+              <Col xs={12} md={3}>
+                <h5>
+                    Last Updated on:
+                    {dateString}
+                </h5>
+                <br/>
+                <h5>
+                    Toggle using the below buttons.
+                </h5>
+              </Col>
+              <Col xs={12} md={3}>
+              <h5>
+                Compound Score
+              </h5>
+              <p>
+                Computed as sum of compound sentiment scores (values ranging from -1 to 1 for each comment), divided by the number of comments.
+              </p>
+              <h5>
+                # Comments
+              </h5>
+              <p>
+                Number of comments posted on Game Thread posts since the start of the year.
+              </p>
+              </Col>
+              <Col xs={12} md={3}>
+                <h5>
+                  Positive Score
+                </h5>
+                <p>
+                  Computed as sum of positive sentiment scores (values ranging from 0 to 1 for each comment), divided by the number of comments.
+                </p>
+                <h5>
+                  Negative Score
+                </h5>
+                <p>
+                  Computed as sum of negative sentiment scores (values ranging from 0 to 1 for each comment), divided by the number of comments.
+                </p>
+              </Col>
+            <Col xs={12} md={3}>
+              <h5>
+                Score
+              </h5>
+              <p>
+                Aggregated total of upvotes and downvotes for all comments. 
+              </p>
+              <h5>
+                F*CK Count
+              </h5>
+              <p>
+                Number f-word derivatives in comments.
+              </p>
+              <h5>
+                Ref References
+              </h5>
+              <p>
+                Number ref derivatives in comments.
+              </p>
+            </Col>
             </Row>
+            <ToolkitProvider
+              keyField='author'
+              data={ this.state.tableData }
+              columns={ columns }
+              columnToggle
+            >
+              {
+                    props => (
+                            <div>
+                              <ToggleList { ...props.columnToggleProps } />
+                              <hr />
+                              <BootstrapTable { ...props.baseProps } bootstrap4={true}/>
+                            </div>
+                          )
+                  }
+            </ToolkitProvider>
             <BootstrapTable bootstrap4={true} keyField='author' data={this.state.tableData} columns={ columns } />
           </div>
     )
