@@ -4,6 +4,7 @@ import Home from 'Pages/Home'
 import Team from 'Pages/Team'
 import Game from 'Pages/Game'
 import Leaderboard from 'Pages/Leaderboard'
+import Compare from 'Pages/Compare'
 import NRL from 'Pages/NRL'
 
 class App extends Component {
@@ -14,6 +15,7 @@ class App extends Component {
         <Route exact path='/games/:id' params={{fromHeader: true}} component={Game} />
         <Route exact path='/teams/:abbr' params={{fromHeader: true}} component={Team} />
         <Route exact path='/teams/:abbr/games/:id' params={{fromHeader: true}} component={Game} />
+        <Route exact path='/compare' params={{fromHeader: true}} component={Compare} />
         <Route exact path='/leaderboard/' params={{fromHeader: true}} component={Leaderboard} />
         <Route exact path='/leaderboard/:abbr' params={{fromHeader: true}} component={Leaderboard} />
         <Route exact path='/nrl' params={{fromHeader: true}} component={NRL} />

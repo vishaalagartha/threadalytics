@@ -117,7 +117,7 @@ export default class SentimentChart extends Component {
            .attr('r', 3)
            .attr('cx', d => xScale(d.x))
            .attr('cy', d => yScale(d.y))
-           .on('mouseover', function(d) {   
+           .on('mouseover', function(d, i) {   
              div.transition()   
                .duration(200)   
                .style('opacity', 1)
