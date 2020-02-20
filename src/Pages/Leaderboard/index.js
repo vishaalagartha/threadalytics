@@ -201,7 +201,6 @@ export default class Leaderboard extends Component {
                           )
                   }
             </ToolkitProvider>
-            <BootstrapTable bootstrap4={true} keyField='author' data={this.state.tableData} columns={ columns } />
           </div>
     )
 
