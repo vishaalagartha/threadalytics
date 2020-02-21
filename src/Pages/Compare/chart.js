@@ -33,6 +33,94 @@ const colors = {'AtlantaHawks': {'main_color': 'red', 'secondary_color': 'white'
    'washingtonwizards': {'main_color': 'navy', 'secondary_color': 'red'},
    'nba': {'main_color': 'red', 'secondary_color': 'blue'}}
 
+export const drawCommentChart = (data) => {
+      const svg = d3.select('#commentChart')
+      if(svg.size()===0) return
+      svg.selectAll('g').remove()
+      const margin = {top: 80, right: 50, bottom: 150, left: 70}
+      const width = svg.node().getBoundingClientRect().width - margin.right - margin.left
+      const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom
+      
+      const chart = d3.select('#commentChart').append('g')
+                  .attr('transform', `translate(${margin.left}, ${margin.top})`)
+                  .style('z-index', 1)
+      let sortable = []
+      for(const team in data){
+        sortable.push({team, num_comments: data[team]['Comment Count']})
+      }
+      sortable.sort((a, b) => a.num_comments-b.num_comments)
+
+      let xScale = d3.scaleBand().domain(sortable.map(d => d.team))
+                                   .range([0, width-margin.right])
+      let yScale = d3.scaleLinear().domain([0, sortable[sortable.length-1].num_comments])
+                                   .range([height, 0])
+      chart.append('g')
+          .attr('class', 'y axis')
+          .call(d3.axisLeft(yScale))
+
+      chart.append('g')
+          .attr('class', 'x axis')
+          .attr('transform', `translate(0,${height})`)
+          .call(d3.axisBottom(xScale))
+          .selectAll('text')
+              .attr('y', 0)
+              .attr('x', 9)
+              .attr('dy', '.35em')
+              .attr('transform', 'rotate(90)')
+              .style('text-anchor', 'start')
+
+      let div = d3.select('#commentTooltip')
+
+      chart.selectAll('.bar')
+                  .data(sortable)
+                  .enter().append('rect')
+                  .attr('class', 'bar')
+                  .attr('fill', d => colors[d.team].main_color)
+                  .attr('x', d => xScale(d.team))
+                  .attr('width', xScale.bandwidth())
+                  .attr('y', height)
+                  .attr('height', 0)
+                  .on('mouseover', d => {
+                     let htmlStr = `Subreddit: r/${d.team}<br/>${d.num_comments} Comments`
+                     div.html(htmlStr)  
+                        .style('left', xScale(d.team)+20+'px')    
+                        .style('top', yScale(d.num_comments)+'px')
+                     div.transition()   
+                       .duration(200)   
+                       .style('opacity', 1)
+
+                  })
+                  .on('mouseout', () => { 
+                      div.transition()   
+                        .duration(200)   
+                        .style('opacity', 0)
+                  })
+
+      chart.selectAll('.bar')
+                  .transition()
+                  .duration(3000)
+                  .attr('y', d => yScale(d.num_comments))
+                  .attr('height', d => height-yScale(d.num_comments))
+
+
+      chart.append('text')
+           .text('Number of comments by Subreddit')
+           .style('font-size', '18px')
+           .style('text-anchor', 'middle')
+           .attr('transform', `translate(${width/2-20}, -20)`)
+      chart.append('text')
+           .text('Subreddit')
+           .style('font-size', '12px')
+           .style('text-anchor', 'middle')
+           .attr('transform', `translate(${width/2-20}, ${height+90})`)
+      chart.append('text')
+           .text('Number of comments')
+           .style('font-size', '12px')
+           .style('text-anchor', 'middle')
+           .attr('transform', `translate(-40, ${height/2+20})rotate(-90)`)
+
+}
+
 export const drawSentimentChart = (data, key) => {
     const id = '#'+key.toLowerCase()+'Chart'
     const svg = d3.select(id)
