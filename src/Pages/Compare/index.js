@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Container, Card, Row, Col, Image } from 'react-bootstrap'
+import { Container, Card, Row, Col } from 'react-bootstrap'
 import Header from 'Components/Header'
-import * as d3 from 'd3'
 import { leaderboardEndpoints } from 'helpers/constants'
-import { drawChart } from './chart'
+import { drawSentimentChart, drawDonutChart } from './chart'
 
 
 const tipStyle = {
@@ -11,7 +10,7 @@ const tipStyle = {
   opacity: '0',
   textAlign: 'center',     
   width: '150px',   
-  height: '30px',         
+  height: '100px',         
   padding: '2px',      
   fontSize: '10px',
   background: 'lightsteelblue', 
@@ -20,25 +19,12 @@ const tipStyle = {
   pointerEvents: 'none'     
 }
 
-const descripStyle = {
-  position: 'absolute',
-  opacity: '0',
-  padding: '2px',      
-  fontSize: '15px',
-  width: '300px',
-  color: 'white',
-  border: '0px',    
-  borderRadius: '8px',  
-  pointerEvents: 'none',
-  zIndex: 1
-}
-
 export default class Compare extends Component { 
 
   constructor(props) {
     super(props)
     this.state = {
-      sentimentData: {}
+      data: {}
     }
   }
 
@@ -51,14 +37,18 @@ export default class Compare extends Component {
            let avgCmpd = []
            let avgPos = []
            let avgNeg = []
+           let fCount = 0
+           let refCount = 0
            for(let i=0; i<results.data.author.length; i++){
              avgCmpd.push(results.data.compound_sum[i]/results.data.num_comments[i])
              avgPos.push(results.data.pos_sum[i]/results.data.num_comments[i])
              avgNeg.push(results.data.neg_sum[i]/results.data.num_comments[i])
+             fCount+=results.data.f_count[i]
+             refCount+=results.data.ref_count[i]
            }
            this.setState({...this.state, 
-             sentimentData: {...this.state.sentimentData, 
-             [subreddit]: {avgCmpd, avgPos, avgNeg}
+             data: {...this.state.data, 
+             [subreddit]: {'Compound': avgCmpd, 'Positive': avgPos, 'Negative': avgNeg, 'F*CK Count': fCount, 'Ref References': refCount}
              }
            })
          })
@@ -69,52 +59,97 @@ export default class Compare extends Component {
     this.fetchLeaderboardStatistics()
   }
 
-  drawSentimentChart(data) {
+  showFList() {
     let sortable = []
-    for(const d in data){
-      if(data[d].avgCmpd.length===0) continue
-      const avgCmpd = data[d].avgCmpd.reduce((p, c) => p+c, 0)/data[d].avgCmpd.length
-      const cmpdDev = d3.deviation(data[d].avgCmpd)
-      const avgPos = data[d].avgPos.reduce((p, c) => p+c, 0)/data[d].avgPos.length
-      const posDev = d3.deviation(data[d].avgPos)
-      const avgNeg = data[d].avgNeg.reduce((p, c) => p+c, 0)/data[d].avgNeg.length
-      const negDev = d3.deviation(data[d].avgNeg)
-      sortable.push({x: d, avgCmpd, cmpdDev, avgPos, posDev, avgNeg, negDev})
+    let total = 0
+    for(const team in this.state.data){
+      total+=this.state.data[team]['F*CK Count']
+      sortable.push({team, fCount: this.state.data[team]['F*CK Count']}) 
     }
-    if(sortable.length===0) return
-    sortable.sort((a, b) => a.avgCmpd-b.avgCmpd)
-    drawChart(sortable, 'avgCmpd', 'cmpdDev', 'Average Compound Sentiment', 'compoundChart')
-    sortable.sort((a, b) => a.avgPos-b.avgPos)
-    drawChart(sortable, 'avgPos', 'posDev', 'Average Positive Sentiment', 'posChart')
-    sortable.sort((a, b) => a.avgNeg-b.avgNeg)
-    drawChart(sortable, 'avgNeg', 'negDev', 'Average Negative Sentiment', 'negChart')
+    sortable.sort((a, b) => b.fCount - a.fCount)
+
+    return (
+        <ol>
+          {sortable.map(el => {
+
+            return (
+              <li key={el.team}>
+                {el.team},{' '}
+                {el.fCount} F*CKS{' '}
+                ({(el.fCount/total*100).toPrecision(3)}%)
+              </li>
+            )
+          })}
+        </ol>
+    )
+
+  }
+
+  showRefList() {
+    let sortable = []
+    let total = 0
+    console.log(this.state.data)
+    for(const team in this.state.data){
+      total+=this.state.data[team]['Ref References']
+      sortable.push({team, refReferences: this.state.data[team]['Ref References']}) 
+    }
+    sortable.sort((a, b) => b.refReferences - a.refReferences)
+
+    return (
+        <ol>
+          {sortable.map(el => {
+
+            return (
+              <li key={el.team}>
+                {el.team},{' '}
+                {el.refReferences} Ref References{' '}
+                ({(el.refReferences/total*100).toPrecision(3)}%)
+              </li>
+            )
+          })}
+        </ol>
+    )
 
   }
 
   render() {
-    this.drawSentimentChart(this.state.sentimentData)
+    drawSentimentChart(this.state.data, 'Compound')
+    drawDonutChart(this.state.data, 'F*CK Count')
+    drawDonutChart(this.state.data, 'Ref References')
     return (
       <div>
         <Header fromTeam={null}/>
-        <Container>
+        <Container style={{marginBottom: '10%'}}>
           <Col xs={12} style={{marginTop: '10%', height: '600px'}}>
             <Card style={{width: '100%', height: '100%'}}>
               <svg id='compoundChart' style={{width:'100%', height:'100%'}}>
               </svg>
+              <div id='compoundTooltip' style={tipStyle}>
+              </div>
             </Card>
           </Col>
-          <Col xs={12} style={{marginTop: '10%', height: '600px'}}>
-            <Card style={{width: '100%', height: '100%'}}>
-              <svg id='posChart' style={{width:'100%', height:'100%'}}>
-              </svg>
-            </Card>
-          </Col>
-          <Col xs={12} style={{marginTop: '10%', height: '600px'}}>
-            <Card style={{width: '100%', height: '100%'}}>
-              <svg id='negChart' style={{width:'100%', height:'100%'}}>
-              </svg>
-            </Card>
-          </Col>
+          <Card style={{height: '800px', marginTop: '10px'}}>
+            <Row>
+              <Col xs={6} style={{height: '800px'}}>
+                <svg id='fChart' style={{width: '100%', height:'100%', overflow: 'visible'}}>
+                </svg>
+              </Col>
+              <Col xs={{span: 5, offset: 1}} style={{marginTop: '10px'}}>
+                {this.showFList()}
+              </Col>
+           </Row>
+          </Card>
+          <Card style={{height: '800px', marginTop: '10px'}}>
+            <Row>
+              <Col xs={6} style={{height: '800px'}}>
+                <svg id='refChart' style={{width: '100%', height:'100%', overflow: 'visible'}}>
+                </svg>
+              </Col>
+              <Col xs={{span: 5, offset: 1}} style={{marginTop: '10px'}}>
+                {this.showRefList()}
+              </Col>
+           </Row>
+          </Card>
         </Container>
       </div>
     )
