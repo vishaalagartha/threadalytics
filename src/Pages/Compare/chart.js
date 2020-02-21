@@ -103,7 +103,7 @@ export const drawSentimentChart = (data, key) => {
                    let htmlStr = `Subreddit: r/${d.x}<br/>${key} Sentiment Median:${median}<br/>Q1:${q1}<br/>Q3:${q3}`
                    div.html(htmlStr)  
                       .style('left', xScale(d.x)+20+'px')    
-                      .style('top', yScale(d.median)+70+'px')
+                      .style('top', yScale(d.q3)-50+'px')
                 })
                 .on('mouseout', () => { 
                   div.transition()   
@@ -135,7 +135,7 @@ export const drawSentimentChart = (data, key) => {
                    let htmlStr = `Subreddit: r/${d.x}<br/>${key} Sentiment Median:${median}<br/>Q1:${q1}<br/>Q3:${q3}`
                    div.html(htmlStr)  
                       .style('left', xScale(d.x)+20+'px')    
-                      .style('top', yScale(d.median)+70+'px')
+                      .style('top', yScale(d.q1)+100+'px')
                 })
                 .on('mouseout', () => { 
                   div.transition()   
