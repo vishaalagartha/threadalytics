@@ -25,6 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy-production": "react-scripts build && scp -r ./build/* vishaalagartha@165.227.49.27:/var/www/threadalytics.com/html",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
