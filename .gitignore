@@ -6,6 +6,7 @@
 
 # dependencies
 /node_modules
+/threadalytics-client/node_modules
 /.pnp
 .pnp.js
 
@@ -13,7 +14,7 @@
 /coverage
 
 # production
-/build
+/threadalytics-client/build
 
 # misc
 .DS_Store

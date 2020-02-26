@@ -46,8 +46,12 @@ export default class WordCloud extends Component {
 
     let data = []
 
-    for(let w in words)
+    for(let w in words){
       data.push({'text': w, 'value': words[w]})
+    }
+
+    let sortedData = data.sort((a, b) => a['value']-b['value'])
+    console.log(sortedData)
 
     const width = window.innerWidth<=760 ? document.getElementById('wordCloudCol').offsetWidth-20 : document.getElementById('wordCloudCol').offsetWidth
 
