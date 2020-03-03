@@ -5,9 +5,9 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import BootstrapTable from 'react-bootstrap-table-next'
 import Header from 'Components/Header'
 import { TEAM_ABBR_TO_TEAM, TEAM_TO_SUBREDDIT, leaderboardEndpoints } from 'helpers/constants'
-import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit'
-
+import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit'                     
 const { ToggleList } = ColumnToggle
+
 const sortFunction = (order) => {
       if(order===undefined)
         return (<span><FaCaretUp/><FaCaretDown/></span>)
@@ -17,6 +17,35 @@ const sortFunction = (order) => {
         return (<span><FaCaretUp/></span>)
       return null
     }
+
+const CustomToggleList = ({
+    columns,
+    onColumnToggle,
+    toggles
+}) => (
+    <div className='btn-group btn-group-toggle btn-group-vertical' data-toggle='buttons'>
+      {
+              columns
+                .map(column => ({
+                            ...column,
+                            toggle: toggles[column.dataField]
+                          }))
+                .map(column => (
+                            <button
+                              type='button'
+                              key={ column.dataField }
+                              className={ `btn btn-primary ${column.toggle ? 'active' : ''}` }
+                              data-toggle='button'
+                              aria-pressed={ column.toggle ? 'true' : 'false' }
+                              onClick={ () => onColumnToggle(column.dataField) }
+                            >
+                              { column.text }
+                            </button>
+                          ))
+            }
+    </div>
+)
+
 const columns = [{
     dataField: 'author',
     text: 'Author',
@@ -29,36 +58,43 @@ const columns = [{
     dataField: 'compound',
     text: 'Compound Score',
     sort: true,
+    hidden: window.innerWidth<=760 ? true : false,
     sortCaret: sortFunction
 }, {
     dataField: 'pos',
     text: 'Positive Score',
     sort: true,
+    hidden: window.innerWidth<=760 ? true : false,
     sortCaret: sortFunction
 }, {
     dataField: 'neg',
     text: 'Negative Score',
     sort: true,
+    hidden: window.innerWidth<=760 ? true : false,
     sortCaret: sortFunction
 }, {
     dataField: 'num_comments',
     text: '# Comments',
     sort: true,
+    hidden: window.innerWidth<=760 ? true : false,
     sortCaret: sortFunction
 }, {
     dataField: 'score',
     text: 'Score',
     sort: true,
+    hidden: window.innerWidth<=760 ? true : false,
     sortCaret: sortFunction
 }, {
     dataField: 'f_count',
     text: 'F*CK Count',
     sort: true,
+    hidden: window.innerWidth<=760 ? true : false,
     sortCaret: sortFunction
 }, {
     dataField: 'ref_count',
     text: 'Ref References',
     sort: true,
+    hidden: window.innerWidth<=760 ? true : false,
     sortCaret: sortFunction
 }]
 
@@ -194,9 +230,14 @@ export default class Leaderboard extends Component {
               {
                     props => (
                             <div>
+                              {window.innerWidth<=760 ? 
+                              <CustomToggleList { ...props.columnToggleProps } />
+                              :
                               <ToggleList { ...props.columnToggleProps } />
+                              }
                               <hr />
-                              <BootstrapTable { ...props.baseProps } bootstrap4={true}/>
+                              <BootstrapTable { ...props.baseProps } bootstrap4={true}
+                              style={{fontSize: '1px'}}/>
                             </div>
                           )
                   }

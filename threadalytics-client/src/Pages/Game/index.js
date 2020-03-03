@@ -96,20 +96,20 @@ export default class Game extends Component {
               </Col>
             </Row>
             <Row style={{paddingTop: '1em', marginBottom: '1em', height: '400px'}}>
-                <Col xs={12} md={8}>
+                <Col xs={12} md={8} style={{overflow: 'hidden'}}>
                   <FrequencyChart comments={this.state.comments}/>
                 </Col>
                 <Col xs={12} md={4} style={window.innerWidth<=760 ? {paddingTop: '1em'} : {}}>
                   <GameSummary comments={this.state.comments}/>
                 </Col>
             </Row>
-            <Row style={{marginTop: '1em'}}>
-              <Col xs={12} style={{height: '400px'}}>
+            <Row style={{paddingTop: '1em'}}>
+              <Col xs={12} style={{height: '400px', overflow: 'hidden'}}>
                 <SentimentChart comments={this.state.comments}/>
               </Col>
             </Row>
             { 
-              this.props.match.params['abbr']===undefined ?
+              this.props.match.params['abbr']===undefined && window.innerWidth>=760 ?
               <Row style={{marginTop: '1em'}}>
                 <Col xs={12} style={{height: '600px'}}>
                   <FlairStats comments={this.state.comments}/>
@@ -127,7 +127,8 @@ export default class Game extends Component {
               <Col xs={12} md={6}>
                 <PositiveAuthor comments={this.state.comments}/>
               </Col>
-              <Col xs={12} md={6} style={window.innerWidth<=760 ? {padding: '1em 0em 3em 0em'} : {}}>
+              <Col xs={12} md={6} style={window.innerWidth<=760 ? {padding: '1em 1em 1em 1em'} : {}}>
+
                 <NegativeAuthor comments={this.state.comments}/>
               </Col>
             </Row>
@@ -165,7 +166,7 @@ export default class Game extends Component {
             <Fade delay={10000} duration={2000}>
                 {
                   this.state.fetchedComments ? this.renderStatistics() : 
-                  <div style={{marginLeft: window.innerWidth/2-200}}>
+                  <div style={{}}>
                     <RingLoader
                       size={400}
                       color={loadingColor}

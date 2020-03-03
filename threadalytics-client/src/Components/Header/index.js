@@ -72,9 +72,13 @@ export default class Header extends Component {
                 )
               })
             }
+          { window.innerWidth>760 ? 
             <Nav.Link href='/compare'>
               Compare Subreddits
             </Nav.Link>
+            :
+            null
+          }
             <Nav.Link href={this.props.fromTeam===null || this.props.fromTeam===undefined ? '/leaderboard' : '/leaderboard/' + this.props.fromTeam}>
               {
                 this.props.fromTeam===null || this.props.fromTeam===undefined ? 

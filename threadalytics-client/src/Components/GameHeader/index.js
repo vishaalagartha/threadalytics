@@ -7,10 +7,10 @@ let styles = {
   header: {
     minHeight: '220px',
     background: '#fafafa',
-    borderBottom: '1px solid #ccc'
+    borderBottom: '1px solid #ccc',
+    overflow: 'hidden'
   },
   row: {
-    justifyContent: 'space-around'
   },
   centerColumn: {
     marginTop: '3.0em',
@@ -57,10 +57,10 @@ export default class GameHeader extends Component {
       <Zoom>
         <div style={styles.header}>
           <Row style={styles.row}>
-            <Col xs={window.innerWidth<=760 ? 3 : 2}>
-            <Fade delay={2000} duration={2000}>
-              <Image alt={awayAbbr} src={awayImageUrl} fluid roundedCircle/>
-            </Fade>
+            <Col xs={3} md={2}>
+              <Fade delay={2000} duration={2000}>
+                <Image alt={awayAbbr} src={awayImageUrl} fluid roundedCircle/>
+              </Fade>
             </Col>
             <Col xs={6} style={styles.centerColumn} className='text-center'>
             { window.innerWidth > 760 ? 
@@ -103,10 +103,10 @@ export default class GameHeader extends Component {
               </div>
             }
             </Col>
-            <Col xs={window.innerWidth<=760 ? 3 : 2}>
-            <Fade delay={2000} duration={2000}>
-              <Image alt={homeAbbr} src={homeImageUrl} fluid roundedCircle/>
-            </Fade>
+            <Col xs={3} md={2}>
+              <Fade delay={2000} duration={2000}>
+                <Image alt={homeAbbr} src={homeImageUrl} fluid roundedCircle/>
+              </Fade>
             </Col>
           </Row>
         </div>
