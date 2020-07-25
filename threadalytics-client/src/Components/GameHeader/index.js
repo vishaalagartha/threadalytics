@@ -8,9 +8,11 @@ let styles = {
     minHeight: '220px',
     background: '#fafafa',
     borderBottom: '1px solid #ccc',
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   row: {
+    display: 'flex',
+    justifyContent: 'center'
   },
   centerColumn: {
     marginTop: '3.0em',

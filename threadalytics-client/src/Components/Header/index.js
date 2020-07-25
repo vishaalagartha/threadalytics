@@ -72,6 +72,7 @@ export default class Header extends Component {
                 )
               })
             }
+      {/*
           { window.innerWidth>760 ? 
             <Nav.Link href='/compare'>
               Compare Subreddits
@@ -87,6 +88,7 @@ export default class Header extends Component {
                   TEAM_TO_SUBREDDIT[TEAM_ABBR_TO_TEAM[this.props.fromTeam]] + ' Leaderboard'
               }
               </Nav.Link> 
+       */}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

@@ -50,7 +50,9 @@ export default class Game extends Component {
   }
 
   fetchGameComments(id, after, comments) {
-    fetch(`https://api.pushshift.io/reddit/comment/search/?link_id=${id}&limit=500&after=${after}`)
+    const url = `https://api.pushshift.io/reddit/comment/search/?link_id=${id}&limit=500&after=${after}`
+
+    fetch(url)
       .then(res => res.json())
       .then(
       result => {
@@ -69,6 +71,7 @@ export default class Game extends Component {
         else{
           this.setState({...this.state, fetchedComments: true, comments})
         }
+        console.log(comments)
       })
   }
 
@@ -155,6 +158,7 @@ export default class Game extends Component {
     const containerStyles = {
       backgroundImage,
       backgroundPosition: 'top',
+      minHeight: '500px'
     }
     return (
       <div>
@@ -166,7 +170,7 @@ export default class Game extends Component {
             <Fade delay={10000} duration={2000}>
                 {
                   this.state.fetchedComments ? this.renderStatistics() : 
-                  <div style={{}}>
+                  <div style={{display: 'flex', justifyContent: 'center'}}>
                     <RingLoader
                       size={400}
                       color={loadingColor}
