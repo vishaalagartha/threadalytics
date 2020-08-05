@@ -49,30 +49,48 @@ export default class Game extends Component {
     return newData
   }
 
-  fetchGameComments(id, after, comments) {
-    const url = `https://api.pushshift.io/reddit/comment/search/?link_id=${id}&limit=500&after=${after}`
+    fetchGameCommentsPushshift(id, after, comments) {
+      const url = `https://api.pushshift.io/reddit/comment/search/?link_id=${id}&limit=500&after=${after}`
 
     fetch(url)
       .then(res => res.json())
       .then(
-      result => {
-        const data = result.data
-        if(data.length===0){
-          this.setState({...this.state, fetchedComments: true, comments})
-          return
-        }
-        after = data[data.length-1].created_utc
-        const nResults = data.length 
-        this.setState({...this.state, commentCount: this.state.commentCount+nResults})
-        comments = [...comments, ...this.addTones(data)]
-        if(nResults===500){ 
-          this.fetchGameComments(id, after, comments)
-        }
-        else{
-          this.setState({...this.state, fetchedComments: true, comments})
-        }
-        console.log(comments)
-      })
+        result => {
+          const data = result.data
+          if(data.length===0){
+            this.setState({...this.state, fetchedComments: true, comments})
+            return
+          }
+          after = data[data.length-1].created_utc
+          const nResults = data.length 
+          this.setState({...this.state, commentCount: this.state.commentCount+nResults})
+          comments = [...comments, ...this.addTones(data)]
+          if(nResults===500){ 
+            this.fetchGameCommentsPushshift(id, after, comments)
+          }
+          else{
+            this.setState({...this.state, fetchedComments: true, comments})
+          }
+        })
+  }
+
+  fetchGameComments(id, after, comments) {
+      fetch('https://threadalytics.com/api/comments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({id})
+        })
+        .then(res => res.json())
+        .then(comments => {
+            comments = [...this.addTones(comments)]
+            this.setState({...this.state, fetchedComments: true, comments})
+        })
+        .catch(e => {
+          console.log('Fetching via Pushshift')
+          this.fetchGameCommentsPushshift(id, after, [])
+        })
   }
 
   renderStatistics() {

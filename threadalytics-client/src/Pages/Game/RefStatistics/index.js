@@ -14,8 +14,9 @@ export default class RefStatistics extends Component {
   }
 
   UNSAFE_componentWillMount(){
-    if(this.props.comments!==this.state.comments)
+    if(this.props.comments.length>this.state.comments.length){
       this.setState({...this.props})
+    }
   }
 
   getRefCount(){

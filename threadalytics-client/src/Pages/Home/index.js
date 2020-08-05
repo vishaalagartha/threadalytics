@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 import { Fade,  Slide } from 'react-reveal'
 import { TEAM_TO_TEAM_ABBR } from 'helpers/constants'
 
-
 const styles = {
   analysis: {
         display: 'block', 

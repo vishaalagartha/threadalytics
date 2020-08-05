@@ -24,7 +24,11 @@ export default class Summary extends Component {
   }
 
   getNumAuthors(){
-    const authors = this.state.comments.map(el => el.author)
+    let authors = []
+    if(typeof this.state.comments[0].author==='string')
+      authors = this.state.comments.map(el => el.author)
+    else
+      authors = this.state.comments.map(el => el.author.author_fullname)
     const uniqueAuthors = [...new Set(authors)]
     return uniqueAuthors.length
   }

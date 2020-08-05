@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Navbar, Nav, NavDropdown, Image } from 'react-bootstrap'
-import { TEAM_TO_TEAM_ABBR, TEAM_ABBR_TO_TEAM, TEAM_TO_SUBREDDIT } from 'helpers/constants'
+import { TEAM_TO_TEAM_ABBR } from 'helpers/constants'
 import logo from 'assets/images/logo.png'
 
 const teams = ['Atlanta Hawks',
