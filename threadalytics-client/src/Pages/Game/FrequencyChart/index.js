@@ -14,7 +14,8 @@ const tipStyle = {
   background: 'lightsteelblue', 
   border: '0px',    
   borderRadius: '8px',  
-  pointerEvents: 'none'     
+  pointerEvents: 'none',
+  zIndex: 2
 }
 
 const descripStyle = {

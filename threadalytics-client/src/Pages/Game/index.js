@@ -117,7 +117,7 @@ export default class Game extends Component {
               </Col>
             </Row>
             <Row style={{paddingTop: '1em', marginBottom: '1em', height: '400px'}}>
-                <Col xs={12} md={8} style={{overflow: 'hidden'}}>
+                <Col xs={12} md={8}>
                   <FrequencyChart comments={this.state.comments}/>
                 </Col>
                 <Col xs={12} md={4} style={window.innerWidth<=760 ? {paddingTop: '1em'} : {}}>
@@ -125,7 +125,7 @@ export default class Game extends Component {
                 </Col>
             </Row>
             <Row style={{paddingTop: '1em'}}>
-              <Col xs={12} style={{height: '400px', overflow: 'hidden'}}>
+              <Col xs={12} style={{height: '400px'}}>
                 <SentimentChart comments={this.state.comments}/>
               </Col>
             </Row>
