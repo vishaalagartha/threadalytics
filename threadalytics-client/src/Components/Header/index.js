@@ -72,6 +72,7 @@ export default class Header extends Component {
                 )
               })
             }
+            <Nav.Link href='/about'>About Me</Nav.Link>
       {/*
           { window.innerWidth>760 ? 
             <Nav.Link href='/compare'>
