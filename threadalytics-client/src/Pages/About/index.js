@@ -32,7 +32,7 @@ export default class About extends Component {
               </Col>
               <Col xs={9}>
                 <p>
-                  Vishaal is a recent graduation from UCLA's Computer Science program and a software engineer. He's also loves dabbling in NBA statistics and analysis. His home team is the Golden State Warriors (he's not a bandwagoner, he swears!).
+                  Vishaal is a recent graduate from UCLA's Computer Science program and a software engineer. He also loves dabbling in NBA statistics and analysis. His home team is the Golden State Warriors (he's not a bandwagoner, he swears!).
                 </p>
                 <p>
                   His other hobbies include rockclimbing (check out his videos on {' '} 
