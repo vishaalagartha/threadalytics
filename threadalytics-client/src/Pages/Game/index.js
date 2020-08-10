@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Fade from 'react-reveal'
 import vader from 'vader-sentiment'
-import { Container, Col, Row } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import { Card, Container, Col, Row } from 'react-bootstrap'
 import Header from 'Components/Header'
 import GameHeader from 'Components/GameHeader'
 import GameSummary from './Summary'
@@ -15,7 +16,8 @@ import SentimentChart from './SentimentChart'
 import FlairStats from './FlairStats'
 import WordCloud from './WordCloud'
 import { RingLoader } from 'react-spinners'
-import { colors } from 'helpers/constants'
+import { colors, TEAM_ABBR_TO_TEAM, TEAM_TO_TEAM_ABBR } from 'helpers/constants'
+import { getNBAGameThread, getTeamGameThread } from 'helpers/reddit'
 
 export default class Game extends Component { 
 
@@ -24,20 +26,102 @@ export default class Game extends Component {
     this.state = {
       home: null,
       away: null,
-      homeRecord: null,
-      awayRecord: null,
+      homeRec: null,
+      awayRec: null,
+      gameId: null,
       date: null,
       fetchedComments: false,
       commentCount: 0,
-      comments: []
+      comments: [],
+      nbaLink: '',
+      homeLink: '',
+      awayLink: '',
+      threadLink: ''
     }
   }
 
   componentDidMount(){
+    const {home, away, timestamp, abbr} = this.props.match.params
     let after = 0
-    const id = this.props.match.params['id']
-    this.fetchGameComments(id, after, [])
-    this.setState({...this.state, ...this.props.location.state})
+
+    getNBAGameThread(home, away, timestamp)
+        .then(res => {
+          const re =  /GAME THREAD: (.*) \((\d+-\d+)\) @ (.*) \((\d+-\d+)\) - \((.*)\)/
+          const m = re.exec(res.title)
+          if(!abbr){
+            this.setState({...this.state, 
+                home: m[1], 
+                homeRec: m[2], 
+                away: m[3],
+                awayRect: m[4],
+                date: m[5],
+                nbaLink: res.full_link,
+                threadLink: res.full_link,
+                gameId: res.id
+            })
+            this.fetchGameComments(res.id, after, [])
+          }
+          else{
+            this.setState({...this.state, 
+                home: m[1], 
+                homeRec: m[2], 
+                away: m[3],
+                awayRect: m[4],
+                date: m[5],
+                nbaLink: res.full_link,
+            })
+          }
+        })
+        .catch(err => {
+          getNBAGameThread(away, home, timestamp)
+              .then(res => {
+                const re =  /GAME THREAD: (.*) \((\d+-\d+)\) @ (.*) \((\d+-\d+)\) - \((.*)\)/
+                const m = re.exec(res.title)
+                if(!abbr){
+                  this.setState({...this.state, 
+                      home: m[1], 
+                      homeRec: m[2], 
+                      away: m[3],
+                      awayRect: m[4],
+                      date: m[5],
+                      nbaLink: res.full_link,
+                      threadLink: res.full_link,
+                      gameId: res.id
+                  })
+                  this.fetchGameComments(res.id, after, [])
+                }
+                else{
+                  this.setState({...this.state, 
+                      home: m[1], 
+                      homeRec: m[2], 
+                      away: m[3],
+                      awayRect: m[4],
+                      date: m[5],
+                      nbaLink: res.full_link,
+                  })
+                }
+              })
+       })
+
+    getTeamGameThread(home, away, timestamp)
+        .then(res => {
+          if(home===abbr){
+            this.setState({...this.state, homeLink: res.full_link, gameId: res.id, threadLink: res.full_link})
+            this.fetchGameComments(res.id, after, [])
+          }
+          else
+            this.setState({...this.state, homeLink: res.full_link})
+        })
+
+    getTeamGameThread(away, home, timestamp)
+        .then(res => {
+          if(away===abbr){
+            this.setState({...this.state, awayLink: res.full_link, gameId: res.id, threadLink: res.full_link})
+            this.fetchGameComments(res.id, after, [])
+          }
+          else
+            this.setState({...this.state, awayLink: res.full_link})
+        })
   }
 
   addTones(data) {
@@ -88,9 +172,57 @@ export default class Game extends Component {
             this.setState({...this.state, fetchedComments: true, comments})
         })
         .catch(e => {
-          console.log('Fetching via Pushshift')
           this.fetchGameCommentsPushshift(id, after, [])
         })
+  }
+
+  renderResources() {
+    const {home, away, threadLink} = this.state
+    const homeAbbr = TEAM_TO_TEAM_ABBR[home.toUpperCase()]
+    const awayAbbr = TEAM_TO_TEAM_ABBR[away.toUpperCase()]
+    const { abbr, timestamp } = this.props.match.params 
+    let s1, s2, link1, link2
+    if(abbr){
+      if(homeAbbr===abbr){
+        link2 = <Link to={{pathname: `/teams/${awayAbbr}/games/${homeAbbr}@${awayAbbr}-${timestamp}`}}>Opponent Analysis</Link>
+      }
+      else{
+        link2 = <Link to={{pathname: `/teams/${homeAbbr}/games/${homeAbbr}@${awayAbbr}-${timestamp}`}}>Opponent Analysis</Link>
+      }
+      link1 = <Link to={{pathname: `/games/${homeAbbr}@${awayAbbr}-${timestamp}`}}>r/nba Analysis</Link>
+      s1 = 'What is r/nba saying?' 
+      s2 = `What's the enemy saying?`
+    }
+    else{
+      s1 = `What are ${home} fans saying?` 
+      link1 = <Link to={{pathname: `/teams/${homeAbbr}/games/${homeAbbr}@${awayAbbr}-${timestamp}`}}>{home} Analysis</Link>
+      s2 = `What are ${away} fans saying?`
+      link2 = <Link to={{pathname: `/teams/${awayAbbr}/games/${homeAbbr}@${awayAbbr}-${timestamp}`}}>{away} Analysis</Link>
+    }
+    
+    return (
+      <Card style={{marginTop: '1em'}}>
+        <Row style={{paddingTop:'1em', justifyContent: 'space-around'}}>
+          <div>
+            Where is the content coming from?
+            <br/>
+            <a href={threadLink}>Actual game thread</a>
+          </div>
+        </Row>
+        <Row>
+          <Col xs={6}>
+            {s1}
+            <br/>
+            {link1}
+          </Col>
+          <Col xs={6}>
+            {s2}
+            <br/>
+            {link2}
+          </Col>
+        </Row>
+      </Card>
+    )
   }
 
   renderStatistics() {
@@ -109,6 +241,7 @@ export default class Game extends Component {
     else {
     return (
           <Container className='text-center' style={{paddingBottom: '1em'}}>
+            {this.renderResources()}
             <Row style={{paddingTop: '1em'}}>
               <Col xs={12} id='wordCloudCol'>
                 <Fade>
@@ -178,11 +311,14 @@ export default class Game extends Component {
       backgroundPosition: 'top',
       minHeight: '500px'
     }
+    const {home, away} = this.props.match.params
+    let homeTeam = TEAM_ABBR_TO_TEAM[home]
+    let awayTeam = TEAM_ABBR_TO_TEAM[away]
     return (
       <div>
         <Header fromTeam={this.props.match.params['abbr']}/>
-        <GameHeader home={this.state.home} homeRecord={this.state.homeRecord} 
-                    away={this.state.away} awayRecord={this.state.awayRecord}
+        <GameHeader home={homeTeam} homeRecord={this.state.homeRecord} 
+                    away={awayTeam} awayRecord={this.state.awayRecord}
                     date={this.state.date} team={this.props.match.params['abbr']}/>
           <div style={containerStyles}>
             <Fade delay={10000} duration={2000}>

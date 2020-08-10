@@ -66,6 +66,7 @@ export default class Summary extends Component {
           {this.getCommentsPerAuthor()+ ' '}
           Comments/Author
           <br/>
+          <a href={this.state.threadLink}>Link to actual thread</a>
         </Card.Body>
       </Card>
     )

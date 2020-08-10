@@ -31,7 +31,7 @@ export default class Home extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    let after = 1571731200
+    let after = parseInt(+ new Date()/1000)-30000000
     let before = parseInt(+ new Date()/1000)
     this.fetchGames(after, before)
   }
@@ -41,13 +41,14 @@ export default class Home extends Component {
     const newGames = data.map(d => {
       const m = re.exec(d.title)
       if(m===null) return null
+      const date = new Date(d.created_utc*1000).setHours(0, 0, 0, 0)/1000
       return {
-          'Home': m[1],
-          'Home Record': m[2],
-          'Away': m[3],
-          'Away Record': m[4],
-          'Date': m[5],
-          'Game ID': d.id,
+          'home': m[1],
+          'homeRec': m[2],
+          'away': m[3],
+          'awayRec': m[4],
+          'date': m[5],
+          'timestamp': date
        }
     }).filter(g => g!==null)
 
@@ -68,33 +69,25 @@ export default class Home extends Component {
   }
 
   renderGamesForDate = (games) => {
-    return games.map(g=> {
-      const homeAbbr = TEAM_TO_TEAM_ABBR[g['Home'].toUpperCase()]
-      const awayAbbr = TEAM_TO_TEAM_ABBR[g['Away'].toUpperCase()]
+    return games.map((g, i) => {
+      const homeAbbr = TEAM_TO_TEAM_ABBR[g['home'].toUpperCase()]
+      const awayAbbr = TEAM_TO_TEAM_ABBR[g['away'].toUpperCase()]
       const homeImageUrl = 'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + homeAbbr.toLowerCase() + '.png'
       const awayImageUrl = 'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + awayAbbr.toLowerCase() + '.png'
 
       return (
-         <Col key={g['Game ID']} xs={12} md={3} style={styles.analysis}>
-          <Link to={{pathname: '/games/'+g['Game ID'], 
-                state: {
-                         home: g['Home'],
-                         away: g['Away'],
-                         homeRecord: g['Home Record'],
-                         awayRecord: g['Away Record'],
-                         date: g['Date']
-                        }
-                    }}>
+         <Col key={i} xs={12} md={3} style={styles.analysis}>
+          <Link to={{pathname: `/games/${awayAbbr}@${homeAbbr}-${g['timestamp']}`}}>
             <Row>
               <Col xs={6}>
-                <Image alt={g['Away']} src={awayImageUrl} roundedCircle fluid/>
+                <Image alt={g['away']} src={awayImageUrl} roundedCircle fluid/>
               </Col>
               <Col xs={6}>
-                <Image alt={g['Home']} src={homeImageUrl} roundedCircle fluid/>
+                <Image alt={g['home']} src={homeImageUrl} roundedCircle fluid/>
               </Col>
             </Row>
               <p className='text-center'>
-                {awayAbbr} ({g['Away Record']}) @ {homeAbbr} ({g['Home Record']})
+                {awayAbbr} ({g['awayRec']}) @ {homeAbbr} ({g['homeRec']})
               </p>
           </Link>
         </Col>
@@ -103,10 +96,10 @@ export default class Home extends Component {
   }
 
   renderGames = () => {
-    const dates = [...new Set(this.state.games.map(el => el['Date']))]
+    const dates = [...new Set(this.state.games.map(el => el['date']))]
 
     return dates.map((d, i) => {
-      const games = this.state.games.filter(el => el['Date']===d)
+      const games = this.state.games.filter(el => el['date']===d)
       return (
           <Slide left delay={0} duration={1000} key={i}>
             <Row>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col, Image} from 'react-bootstrap'
 import { Zoom, Fade } from 'react-reveal'
-import {TEAM_TO_TEAM_ABBR, TEAM_TO_SUBREDDIT, colors} from 'helpers/constants'
+import {TEAM_TO_TEAM_ABBR, TEAM_ABBR_TO_TEAM, TEAM_TO_SUBREDDIT, colors} from 'helpers/constants'
 
 let styles = {
   header: {
@@ -41,7 +41,7 @@ export default class GameHeader extends Component {
   }
 
   render() {
-    let homeAbbr, awayAbbr, homeImageUrl, awayImageUrl
+    let homeAbbr, awayAbbr, homeImageUrl, awayImageUrl, analysis
     const {home, away, homeRecord, awayRecord} = this.state
     if(home!==null && away!==null && homeRecord!==null && awayRecord!==null){
       homeAbbr = TEAM_TO_TEAM_ABBR[home.toUpperCase()]
@@ -51,6 +51,10 @@ export default class GameHeader extends Component {
     }
     if(this.props.team!==undefined){
       styles.header.background = colors[this.props.team].secondary_color
+      analysis = TEAM_TO_SUBREDDIT[TEAM_ABBR_TO_TEAM[this.props.team]] 
+    }
+    else{
+      analysis = 'r/nba'
     }
     if(window.innerWidth<=760) {
       styles.header.minHeight='100px'
@@ -68,19 +72,18 @@ export default class GameHeader extends Component {
             { window.innerWidth > 760 ? 
               <div>
                 <h3>
-                  {this.props.away} @ {this.props.home}
+                  { this.props.team ? 
+                    <div>{this.props.away} vs {this.props.home}</div>
+                    :
+                    <div>{this.props.away} @ {this.props.home}</div>
+                  }
                 </h3>
                 <h4>
                   {this.props.date}
                 </h4>
                 {
-                  this.props.team===undefined ? 
                   <h4>
-                      r/nba Game Thread Analysis
-                  </h4>
-                  :
-                  <h4>
-                  {TEAM_TO_SUBREDDIT[this.props.home]} Game Thread Analysis
+                  {analysis} Game Thread Analysis
                   </h4>
                 }
               </div>

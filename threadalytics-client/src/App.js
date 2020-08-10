@@ -12,9 +12,9 @@ class App extends Component {
     return (
       <BrowserRouter>
         <Route exact path='/' params={{fromHeader: true}} component={Home} />
-        <Route exact path='/games/:id' params={{fromHeader: true}} component={Game} />
+        <Route exact path='/games/:away@:home-:timestamp' params={{fromHeader: true}} component={Game} />
         <Route exact path='/teams/:abbr' params={{fromHeader: true}} component={Team} />
-        <Route exact path='/teams/:abbr/games/:id' params={{fromHeader: true}} component={Game} />
+        <Route exact path='/teams/:abbr/games/:away@:home-:timestamp' params={{fromHeader: true}} component={Game} />
         <Route exact path='/compare' params={{fromHeader: true}} component={Compare} />
         <Route exact path='/leaderboard/' params={{fromHeader: true}} component={Leaderboard} />
         <Route exact path='/leaderboard/:abbr' params={{fromHeader: true}} component={Leaderboard} />
