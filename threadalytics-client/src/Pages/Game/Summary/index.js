@@ -46,6 +46,21 @@ export default class Summary extends Component {
     return parseFloat(total/numComments.length).toPrecision(3)
   }
 
+  getTopAuthor(){
+    let authors = []
+    if(typeof this.state.comments[0].author==='string')
+      authors = this.state.comments.map(el => el.author)
+    else
+      authors = this.state.comments.map(el => el.author.author_fullname)
+    const authorCount = {}
+    authors.forEach(a => {
+      authorCount[a] = authorCount[a] ? authorCount[a] + 1 : 1
+
+    })
+    const author = Object.keys(authorCount).sort((a,b) => {return authorCount[b]-authorCount[a]})[0]
+    return `/u/${author} (${authorCount[author]} comments)` 
+  }
+
   render() {
     return (
       <Card>
@@ -66,7 +81,9 @@ export default class Summary extends Component {
           {this.getCommentsPerAuthor()+ ' '}
           Comments/Author
           <br/>
-          <a href={this.state.threadLink}>Link to actual thread</a>
+          Top Author:
+          <br/>
+          {this.getTopAuthor()}
         </Card.Body>
       </Card>
     )

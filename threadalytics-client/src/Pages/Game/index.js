@@ -46,6 +46,7 @@ export default class Game extends Component {
 
     getNBAGameThread(home, away, timestamp)
         .then(res => {
+          if(!res) return
           const re =  /GAME THREAD: (.*) \((\d+-\d+)\) @ (.*) \((\d+-\d+)\) - \((.*)\)/
           const m = re.exec(res.title)
           if(!abbr){
@@ -75,6 +76,7 @@ export default class Game extends Component {
         .catch(err => {
           getNBAGameThread(away, home, timestamp)
               .then(res => {
+                if(!res) return
                 const re =  /GAME THREAD: (.*) \((\d+-\d+)\) @ (.*) \((\d+-\d+)\) - \((.*)\)/
                 const m = re.exec(res.title)
                 if(!abbr){
@@ -105,6 +107,7 @@ export default class Game extends Component {
 
     getTeamGameThread(home, away, timestamp)
         .then(res => {
+          if(!res) return
           if(home===abbr){
             this.setState({...this.state, homeLink: res.full_link, gameId: res.id, threadLink: res.full_link})
             this.fetchGameComments(res.id, after, [])
@@ -115,6 +118,7 @@ export default class Game extends Component {
 
     getTeamGameThread(away, home, timestamp)
         .then(res => {
+          if(!res) return
           if(away===abbr){
             this.setState({...this.state, awayLink: res.full_link, gameId: res.id, threadLink: res.full_link})
             this.fetchGameComments(res.id, after, [])

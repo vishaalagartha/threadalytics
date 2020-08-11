@@ -1,23 +1,12 @@
 import React, {Component} from 'react'
 import Fade from 'react-reveal'
 import {FaCloud} from 'react-icons/fa'
-import Cloud from 'react-d3-cloud'
 import {stopwords} from './stopwords'
 import * as d3 from 'd3'
- 
-const fontSizeMapper = (word, numWords) => {
-  let multiplier
-  if(numWords<1000)
-    multiplier = 20
-  else if(numWords<3000)
-    multiplier = 10
-  else if(numWords<4000)
-    multiplier = 5
-  else
-    multiplier = 2
-  return Math.log2(word.value) * multiplier
-}
-const rotate = word => word.value % 360;
+import ReactBootstrapSlider from 'react-bootstrap-slider';
+import Cloud from './wrapper'
+import _ from "lodash"
+
  
 export default class WordCloud extends Component {
 
@@ -26,7 +15,8 @@ export default class WordCloud extends Component {
     this.state = {
       comments: [{text: '', value: 0}],
       data: [],
-      width: 0
+      wordCloudData: [],
+      width: 0,
     }
   }
   
@@ -50,10 +40,11 @@ export default class WordCloud extends Component {
       data.push({'text': w, 'value': words[w]})
     }
 
+    data = data.sort((a, b) => {return b.value-a.value})
 
     const width = window.innerWidth<=760 ? document.getElementById('wordCloudCol').offsetWidth-20 : document.getElementById('wordCloudCol').offsetWidth
 
-    this.setState({comments: this.props.comments, data, width})
+    this.setState({comments: this.props.comments, wordCloudData: _.cloneDeep(data), data, width})
 
     if(d3.select('#wordCloud').selectAll('text').size()===this.state.data.length)
       d3.select('#wordCloud').selectAll('text')
@@ -62,28 +53,7 @@ export default class WordCloud extends Component {
         })
   }
 
-  onWordMouseOver(data) {
-     d3.select('#wordCloud').selectAll('text')
-        .filter(function(){ 
-              return d3.select(this).text() === data.text
-        })
-        .style('font-size', '50px')
-        .style('fill', function(){
-          data.fill = d3.select(this).style('fill')
-          return  '#b30000'
-        })
-  }
 
-  onWordMouseOut(data) {
-     d3.select('#wordCloud').selectAll('text')
-        .filter(function(){ 
-              return d3.select(this).text() === data.text
-        })
-        .style('font-size', data.size + 'px')
-        .style('fill', function(){
-          return data.fill
-        })
-  }
 
   render() {
     return (
@@ -93,14 +63,20 @@ export default class WordCloud extends Component {
             <FaCloud style={{marginRight: '10px'}} />
             Word Cloud
           </h3>
-          <Cloud
-            data={this.state.data}
-            fontSizeMapper={d => fontSizeMapper(d, this.state.data.length)}
-            rotate={rotate}
-            onWordMouseOver={this.onWordMouseOver}
-            onWordMouseOut={this.onWordMouseOut}
-            width={this.state.width}
-            style={{'.div > .svg > .text': 'Action Bold NBA !important'}}
+          <Cloud data={this.state.wordCloudData} width={this.state.width}/>
+          <h3>
+            Cloud size: {this.state.wordCloudData.length}
+          </h3>
+          <ReactBootstrapSlider
+            value={this.state.wordCloudData.length}
+            slideStop={(e) => {
+              this.setState({...this.state, wordCloudData: _.cloneDeep(this.state.data).slice(0, e.target.value)}
+            )}}
+            ticks={Array.from(Array(this.state.data.length).keys())}
+            step={10}
+            max={this.state.data.length}
+            min={0}
+            orientation='horizontal'
           />
         </div>
       </Fade>

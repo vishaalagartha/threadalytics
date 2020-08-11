@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './fonts/Action-Bold-NBA.ttf'
 import './fonts/Action-Italics-NBA.ttf'
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-slider/dist/css/bootstrap-slider.css"
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
