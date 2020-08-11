@@ -21,16 +21,27 @@ export default class PositiveAuthor extends Component {
     let authors = {}
     this.state.comments.forEach(c => {
       if(!(c.author in authors))
-        authors[c.author]=0
-      if('tones' in c)
-        authors[c.author]+=c.tones.pos
+        authors[c.author]={score: 0, count: 0, posCount: 0}
+      if('tones' in c){
+        authors[c.author].score+=c.tones.pos
+        if(c.tones.pos>0)
+          authors[c.author].posCount+=1
+      }
+      authors[c.author].count+=1
     })
     let sortable = []
-    for(let a in authors)
-      sortable.push([a, authors[a]])
+    for(const a in authors)
+      sortable.push([a, authors[a].score, authors[a].count, authors[a].posCount/authors[a].count])
 
     sortable.sort((a, b) => b[1]-a[1])
-    const author = sortable[0][0]
+    let index, author
+    for(const i in sortable){
+      if(sortable[i][3]>0.5 && sortable[i][2]>5){
+        author = sortable[i][0]
+        index = i
+        break
+      }
+    }
     const authorComments = []
     for(let i=0; i<this.state.comments.length; i++){
       const c = this.state.comments[i]
@@ -40,16 +51,24 @@ export default class PositiveAuthor extends Component {
 
     return (
       <div>
-        <a href={'https://www.reddit.com/user/'+author}>u/{author}</a>
-        <p>Logged a positive score of {sortable[0][1].toPrecision(3)} with comments like:</p>
-        {
-          authorComments.map((c, i) => {
-            return (
-              <p key={i} style={{fontFamily: 'Action Italics NBA'}}>
-                  "{c}"
-              </p>
-            )
-          })
+        { author ?
+            <div>
+              <a href={'https://www.reddit.com/user/'+author}>u/{author}</a>
+              <p>Logged a positive score of {sortable[index][1].toPrecision(3)} with comments like:</p>
+              {
+                authorComments.map((c, i) => {
+                  return (
+                    <p key={i} style={{fontFamily: 'Action Italics NBA'}}>
+                        "{c}"
+                    </p>
+                  )
+                })
+              }
+            </div>
+          :
+            <div>
+              Sorry this was not a very positive game thread, so we could not find a most positive author. :(
+            </div>
         }
       </div>
     )

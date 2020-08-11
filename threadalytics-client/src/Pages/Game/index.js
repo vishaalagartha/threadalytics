@@ -3,6 +3,7 @@ import Fade from 'react-reveal'
 import vader from 'vader-sentiment'
 import { Link } from 'react-router-dom'
 import { Card, Container, Col, Row } from 'react-bootstrap'
+import {BrowserView} from 'react-device-detect'
 import Header from 'Components/Header'
 import GameHeader from 'Components/GameHeader'
 import GameSummary from './Summary'
@@ -248,9 +249,11 @@ export default class Game extends Component {
             {this.renderResources()}
             <Row style={{paddingTop: '1em'}}>
               <Col xs={12} id='wordCloudCol'>
-                <Fade>
-                <WordCloud comments={this.state.comments}/>
-                </Fade>
+                <BrowserView>
+                  <Fade>
+                    <WordCloud comments={this.state.comments}/>
+                  </Fade>
+                </BrowserView>
               </Col>
             </Row>
             <Row style={{paddingTop: '1em', marginBottom: '1em', height: '400px'}}>
@@ -270,7 +273,9 @@ export default class Game extends Component {
               this.props.match.params['abbr']===undefined && window.innerWidth>=760 ?
               <Row style={{marginTop: '1em'}}>
                 <Col xs={12} style={{height: '600px'}}>
-                  <FlairStats comments={this.state.comments}/>
+                  <BrowserView>
+                    <FlairStats comments={this.state.comments}/>
+                  </BrowserView>
                 </Col>
               </Row>
               :

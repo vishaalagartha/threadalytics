@@ -21,15 +21,24 @@ export default class MVP extends Component {
     let authors = {}
     this.state.comments.forEach(c => {
       if(!(c.author in authors))
-        authors[c.author]=0
-      authors[c.author]+=c.score
+        authors[c.author]={score: 0, comments: 0}
+      authors[c.author].score+=c.score
+      authors[c.author].comments+=1
     })
     let sortable = []
     for(let a in authors)
-      sortable.push([a, authors[a]])
+      sortable.push([a, authors[a].score/authors[a].comments, authors[a].comments])
 
     sortable.sort((a, b) => b[1]-a[1])
-    const MVP = sortable[0][0]
+    let MVP, index
+    for(let i in sortable)
+      if(sortable[i][2]>5){
+        MVP = sortable[i][0]
+        index = i
+        break
+      }
+
+
     const MvpComments = []
     for(let i=0; i<this.state.comments.length; i++){
       const c = this.state.comments[i]
@@ -41,7 +50,7 @@ export default class MVP extends Component {
     return (
       <div>
         <a href={'https://www.reddit.com/user/'+MVP}>u/{MVP}</a>
-        <p>scored {sortable[0][1]} with comments like:</p>
+        <p>scored {sortable[index][1].toPrecision(3)} with comments like:</p>
         {
           MvpComments.map((c, i) => {
             return (
@@ -60,19 +69,27 @@ export default class MVP extends Component {
     let authors = {}
     this.state.comments.forEach(c => {
       if(!(c.author in authors))
-        authors[c.author]=0
-      authors[c.author]++
+        authors[c.author]={score: 0, comments: 0}
+      authors[c.author].score+=c.score
+      authors[c.author].comments+=1
     })
     let sortable = []
     for(let a in authors)
-      sortable.push([a, authors[a]])
+      sortable.push([a, authors[a].score/authors[a].comments, authors[a].comments])
 
     sortable.sort((a, b) => b[1]-a[1])
-    return sortable.slice(1, 5).map((el, i) => {
+    let res = []
+    for(let i in sortable)
+      if(sortable[i][2]>5){
+        res.push(sortable[i])
+      }
+
+
+    return res.slice(1, 5).map((el, i) => {
       return (
         <div key={el}>
         {i+2}) <a href={'https://www.reddit.com/user/'+el[0]}>u/{el[0]}</a>
-          <p>Score: {el[1]}</p>
+          <p>Score: {el[1].toPrecision(3)}</p>
         </div>
       )
     })
