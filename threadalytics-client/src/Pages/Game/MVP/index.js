@@ -140,7 +140,7 @@ export default class MVP extends Component {
     return (
       <div>
         {
-          MVP ? 
+          LVP ? 
             <div>
               <a href={'https://www.reddit.com/user/'+LVP}>u/{LVP}</a>
               <p>scored {sortable[index][1].toPrecision(3)}</p>
