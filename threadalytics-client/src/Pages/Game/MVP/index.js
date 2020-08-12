@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Row, Card, Col } from 'react-bootstrap'
 import {FaTrophy, FaMedal} from 'react-icons/fa'
+import {GoThumbsdown} from 'react-icons/go'
+import {isMobile} from 'react-device-detect'
 
 export default class MVP extends Component { 
 
@@ -32,7 +34,7 @@ export default class MVP extends Component {
     sortable.sort((a, b) => b[1]-a[1])
     let MVP, index
     for(let i in sortable)
-      if(sortable[i][2]>5){
+      if(sortable[i][2]>3){
         MVP = sortable[i][0]
         index = i
         break
@@ -89,7 +91,7 @@ export default class MVP extends Component {
     sortable.sort((a, b) => b[1]-a[1])
     let res = []
     for(let i in sortable)
-      if(sortable[i][2]>5){
+      if(sortable[i][2]>3){
         res.push(sortable[i])
       }
 
@@ -114,6 +116,47 @@ export default class MVP extends Component {
     })
   }
 
+  getLVP(){
+    if(this.state.comments.length===0) return null
+    let authors = {}
+    this.state.comments.forEach(c => {
+      if(!(c.author in authors))
+        authors[c.author]={score: 0, comments: 0}
+      authors[c.author].score+=c.score
+      authors[c.author].comments+=1
+    })
+    let sortable = []
+    for(let a in authors)
+      sortable.push([a, authors[a].score/authors[a].comments, authors[a].comments])
+
+    sortable.sort((a, b) => a[1]-b[1])
+    let LVP, index
+    for(let i in sortable)
+      if(sortable[i][2]>3){
+        LVP = sortable[i][0]
+        index = i
+        break
+      }
+    return (
+      <div>
+        {
+          MVP ? 
+            <div>
+              <a href={'https://www.reddit.com/user/'+LVP}>u/{LVP}</a>
+              <p>scored {sortable[index][1].toPrecision(3)}</p>
+            </div>
+          :
+          <div>
+            Sorry, we don't have enough comments in this thread for an LVP yet!
+          </div>
+        }
+      </div>
+    )
+
+
+
+  }
+
   render() {
     return (
       <Row>
@@ -128,7 +171,7 @@ export default class MVP extends Component {
             </Card.Body>
           </Card>
         </Col>
-        <Col xs={12} md={6} style={window.innerWidth<=760 ? {margin: '1em 0em 3em 0em'} : {}}>
+        <Col xs={12} md={6} style={isMobile ? {margin: '1em 0em 3em 0em'} : {}}>
           <Card>
             <Card.Header>
               <FaMedal style={{marginRight: '10px'}} />
@@ -136,6 +179,15 @@ export default class MVP extends Component {
             </Card.Header>
             <Card.Body>
               {this.getRunnersUp()}
+            </Card.Body>
+          </Card>
+          <Card style={{marginTop: '1em'}}>
+            <Card.Header>
+              <GoThumbsdown style={{marginRight: '10px'}} />
+              LVP
+            </Card.Header>
+            <Card.Body>
+              {this.getLVP()}
             </Card.Body>
           </Card>
         </Col>
