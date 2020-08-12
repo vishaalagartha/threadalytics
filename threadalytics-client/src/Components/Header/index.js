@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Navbar, Nav, NavDropdown, Image } from 'react-bootstrap'
-import { TEAM_TO_TEAM_ABBR } from 'helpers/constants'
+import { TEAM_TO_SUBREDDIT, TEAM_ABBR_TO_TEAM, TEAM_TO_TEAM_ABBR } from 'helpers/constants'
 import logo from 'assets/images/logo.png'
 
 const teams = ['Atlanta Hawks',
@@ -72,6 +72,14 @@ export default class Header extends Component {
                 )
               })
             }
+            <Nav.Link href={this.props.fromTeam===null || this.props.fromTeam===undefined ? '/leaderboard' : '/leaderboard/' + this.props.fromTeam}>
+              {
+                this.props.fromTeam===null || this.props.fromTeam===undefined ? 
+                  'Leaderboards'
+                  :
+                  TEAM_TO_SUBREDDIT[TEAM_ABBR_TO_TEAM[this.props.fromTeam]] + ' Leaderboard'
+              }
+              </Nav.Link> 
             <Nav.Link href='/about'>About Me</Nav.Link>
       {/*
           { window.innerWidth>760 ? 
@@ -81,15 +89,7 @@ export default class Header extends Component {
             :
             null
           }
-            <Nav.Link href={this.props.fromTeam===null || this.props.fromTeam===undefined ? '/leaderboard' : '/leaderboard/' + this.props.fromTeam}>
-              {
-                this.props.fromTeam===null || this.props.fromTeam===undefined ? 
-                  'r/nba Leaderboard'
-                  :
-                  TEAM_TO_SUBREDDIT[TEAM_ABBR_TO_TEAM[this.props.fromTeam]] + ' Leaderboard'
-              }
-              </Nav.Link> 
-       */}
+        */}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
-import { Container, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col, Form} from 'react-bootstrap'
 import { FaCaretUp, FaCaretDown } from 'react-icons/fa'
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import BootstrapTable from 'react-bootstrap-table-next'
+import { RingLoader } from 'react-spinners'
 import Header from 'Components/Header'
-import { TEAM_ABBR_TO_TEAM, TEAM_TO_SUBREDDIT, leaderboardEndpoints } from 'helpers/constants'
-import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit'                     
-const { ToggleList } = ColumnToggle
+import { TEAM_TO_SUBREDDIT } from 'helpers/constants'
+import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit'                     
+
+const { SearchBar } = Search
 
 const sortFunction = (order) => {
       if(order===undefined)
@@ -97,7 +99,6 @@ const columns = [{
     hidden: window.innerWidth<=760 ? true : false,
     sortCaret: sortFunction
 }]
-
 export default class Leaderboard extends Component { 
   
   constructor(props){
@@ -110,36 +111,38 @@ export default class Leaderboard extends Component {
 
   }
 
-  fetchLeaderBoard(){
-    let subreddit = 'nba'
-    let endpoint = leaderboardEndpoints[subreddit]
-    if(this.props.match.params['abbr']!==undefined){
-      subreddit = TEAM_TO_SUBREDDIT[TEAM_ABBR_TO_TEAM[this.props.match.params['abbr']]]
-      endpoint = leaderboardEndpoints[subreddit.substring(2)]
-    }
-    fetch(endpoint)
-        .then(res => res.json())
-        .then(
-        result => {
-          const data = result['data']
-          let tableData = []
-          for(let i=0; i<data['author'].length; i++){
-            const author = data['author'][i]
-            const compound = parseFloat(data['compound_sum'][i]/data['num_comments'][i]).toPrecision(3)
-            const pos = parseFloat(data['pos_sum'][i]/data['num_comments'][i]).toPrecision(3)
-            const neg = parseFloat(data['neg_sum'][i]/data['num_comments'][i]).toPrecision(3)
-            const num_comments = data['num_comments'][i]
-            const score = data['total_score'][i]
-            const f_count = data['f_count'][i]
-            const ref_count = data['ref_count'][i]
-            tableData.push({author, compound, pos, neg, num_comments, score, f_count, ref_count})
-          }
-          this.setState({lastUpdate: result['last_update'], tableData})
-        })
+  fetchLeaderBoard(subreddit){
+
+    fetch('https://threadalytics.com/api/leaderboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({subreddit})
+      })
+      .then(res => res.json())
+      .then(result => {
+        const data = result['data']
+        let tableData = []
+        for(const a in data){
+          const compound = parseFloat(data[a][0]/data[a][3]).toPrecision(3)
+          const pos = parseFloat(data[a][1]/data[a][3]).toPrecision(3)
+          const neg = parseFloat(data[a][2]/data[a][3]).toPrecision(3)
+          const num_comments = data[a][3]
+          const score = data[a][4]
+          const f_count = data[a][5]
+          const ref_count = data[a][6]
+          tableData.push({author: a, compound, pos, neg, num_comments, score, f_count, ref_count})
+        }
+        this.setState({lastUpdate: result['timestamp'], tableData})
+      })
+      .catch(e => {
+        this.setState({lastUpdate: -1, tableData: []})
+      })
   }
 
   UNSAFE_componentWillMount() {
-    this.fetchLeaderBoard()
+    this.fetchLeaderBoard('nba')
   }
 
   renderLeaderBoard(){
@@ -165,6 +168,7 @@ export default class Leaderboard extends Component {
               <Col xs={12} md={3}>
                 <h5>
                     Last Updated on:
+                    <br/>
                     {dateString}
                 </h5>
                 <br/>
@@ -226,6 +230,7 @@ export default class Leaderboard extends Component {
               data={ this.state.tableData }
               columns={ columns }
               columnToggle
+              search
             >
               {
                     props => (
@@ -233,8 +238,9 @@ export default class Leaderboard extends Component {
                               {window.innerWidth<=760 ? 
                               <CustomToggleList { ...props.columnToggleProps } />
                               :
-                              <ToggleList { ...props.columnToggleProps } />
+                              null
                               }
+                              <SearchBar { ...props.searchProps } />
                               <hr />
                               <BootstrapTable { ...props.baseProps } bootstrap4={true}
                               style={{fontSize: '1px'}}/>
@@ -244,7 +250,6 @@ export default class Leaderboard extends Component {
             </ToolkitProvider>
           </div>
     )
-
 
   }
 
@@ -257,12 +262,40 @@ export default class Leaderboard extends Component {
       backgroundImage,
       backgroundPosition: 'top',
     }
+    const loadingColor='black'
     return (
       <div style={containerStyles}>
         <Header fromTeam={this.props.match.params['abbr']}/>
         <Container style={{paddingRight: '5px', paddingLeft: '5px', fontSize: '10px', background: 'white'}} className='rounded'>
+          <Row style={{marginTop: '1em', marginBottom: '1em', justifyContent: 'center'}}>
+            <h1>
+              Choose your subreddit:
+            </h1>
+          </Row>
+          <Row style={{marginTop: '1em', marginBottom: '1em', justifyContent: 'center'}}>
+            <Form.Group>
+              <Form.Control as='select' size='sm' onChange={e => { 
+                this.setState({...this.state, lastUpdate: 0})
+                this.fetchLeaderBoard(e.target.value.substr(2))
+              }}>
+                {
+                  ['r/nba', ...Object.values(TEAM_TO_SUBREDDIT)].map((sub, i) => {
+                    return (
+                      <option key={i}>{sub}</option>
+                    )
+                  })
+                }
+              </Form.Control>
+            </Form.Group>
+          </Row>
           {this.state.lastUpdate===0 ?
-            null
+            <div style={{display: 'flex', justifyContent: 'center', marginTop: '5em'}}>
+              <RingLoader
+                size={400}
+                color={loadingColor}
+                loading={true}
+              />
+            </div>
             :
             this.renderLeaderBoard()
           }
