@@ -3,7 +3,7 @@ import Fade from 'react-reveal'
 import vader from 'vader-sentiment'
 import { Link } from 'react-router-dom'
 import { Card, Container, Col, Row } from 'react-bootstrap'
-import {BrowserView} from 'react-device-detect'
+import {BrowserView, isMobile} from 'react-device-detect'
 import Header from 'Components/Header'
 import GameHeader from 'Components/GameHeader'
 import GameSummary from './Summary'
@@ -257,10 +257,10 @@ export default class Game extends Component {
               </Col>
             </Row>
             <Row style={{paddingTop: '1em', marginBottom: '1em', height: '400px'}}>
-                <Col xs={12} md={8}>
+                <Col xs={12} md={8} style={{height: '400px'}}>
                   <FrequencyChart comments={this.state.comments}/>
                 </Col>
-                <Col xs={12} md={4} style={window.innerWidth<=760 ? {paddingTop: '1em'} : {}}>
+                <Col xs={12} md={4} style={isMobile ? {paddingTop: '5em'} : {}}>
                   <GameSummary comments={this.state.comments}/>
                 </Col>
             </Row>
@@ -270,14 +270,14 @@ export default class Game extends Component {
               </Col>
             </Row>
             { 
-              this.props.match.params['abbr']===undefined && window.innerWidth>=760 ?
-              <Row style={{marginTop: '1em'}}>
-                <Col xs={12} style={{height: '600px'}}>
-                  <BrowserView>
-                    <FlairStats comments={this.state.comments}/>
-                  </BrowserView>
-                </Col>
-              </Row>
+              this.props.match.params['abbr']===undefined ?
+              <BrowserView>
+                <Row style={{marginTop: '1em'}}>
+                  <Col xs={12} style={{height: '600px'}}>
+                      <FlairStats comments={this.state.comments}/>
+                  </Col>
+                </Row>
+              </BrowserView>
               :
               null
             }

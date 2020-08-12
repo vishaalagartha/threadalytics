@@ -49,16 +49,25 @@ export default class MVP extends Component {
 
     return (
       <div>
-        <a href={'https://www.reddit.com/user/'+MVP}>u/{MVP}</a>
-        <p>scored {sortable[index][1].toPrecision(3)} with comments like:</p>
         {
-          MvpComments.map((c, i) => {
-            return (
-              <p key={i} style={{fontFamily: 'Action Italics NBA'}}>
-                  "{c}"
-              </p>
-            )
-          })
+          MVP ? 
+            <div>
+              <a href={'https://www.reddit.com/user/'+MVP}>u/{MVP}</a>
+              <p>scored {sortable[index][1].toPrecision(3)} with comments like:</p>
+              {
+                MvpComments.map((c, i) => {
+                  return (
+                    <p key={i} style={{fontFamily: 'Action Italics NBA'}}>
+                        "{c}"
+                    </p>
+                  )
+                })
+              }
+            </div>
+          :
+          <div>
+            Sorry, we don't have enough comments in this thread for an MVP yet!
+          </div>
         }
       </div>
     )
@@ -83,6 +92,16 @@ export default class MVP extends Component {
       if(sortable[i][2]>5){
         res.push(sortable[i])
       }
+
+    if(res.length<3){
+      return (
+        <div>
+          Sorry, there are not enough comments in this thread for Runner's Up.
+        </div>
+      )
+
+
+    }
 
 
     return res.slice(1, 5).map((el, i) => {
