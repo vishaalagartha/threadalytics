@@ -164,7 +164,12 @@ export default class Leaderboard extends Component {
 
     return (
           <div style={{marginTop: '10px'}}>
-            <Row>
+            <Row style={{marginTop: '2em'}}>
+              <h2>
+                2019-2020 NBA Season Statistics
+              </h2>
+            </Row>
+            <Row style={{marginTop: '1em'}}>
               <Col xs={12} md={3}>
                 <h5>
                     Last Updated on:
