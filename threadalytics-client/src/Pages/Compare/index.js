@@ -28,44 +28,45 @@ export default class Compare extends Component {
     }
   }
 
-  fetchLeaderboardStatistics(){
-    for(const t in TEAM_TO_SUBREDDIT){
-      const subreddit = TEAM_TO_SUBREDDIT[t].substr(2)
-      fetch('https://threadalytics.com/api/leaderboard', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({subreddit})
-        })
-        .then(res => res.json())
-        .then(results => {
-           let avgCmpd = []
-           let avgPos = []
-           let avgNeg = []
-           let fCount = 0
-           let refCount = 0
-           let commentCount = 0
-           const {data} = results
-           for(const a in data){
-             avgCmpd.push(data[a][0]/data[a][3])
-             avgPos.push(data[a][1]/data[a][3])
-             avgNeg.push(data[a][2]/data[a][3])
-             fCount+=data[a][4]
-             refCount+=data[a][5]
-             commentCount+=data[a][6]
-           }
-           const newData = {}
-           newData[subreddit] = {'Compound': avgCmpd, 'Positive': avgPos, 'Negative': avgNeg, 'F*CK Count': fCount, 'Ref References': refCount, 'Comment Count': commentCount}
-            this.setState({...this.state, data: {...this.state.data, ...newData}}) 
-
-         })
-       }
+  fetchLeaderboardStatistics(i){
+    const subreddits = Object.values(TEAM_TO_SUBREDDIT)
+    if(i>=subreddits.length) return
+    const subreddit = subreddits[i].substr(2)
+    console.log('fetching', subreddit)
+    fetch('https://threadalytics.com/api/leaderboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({subreddit})
+      })
+      .then(res => res.json())
+      .then(results => {
+         let avgCmpd = []
+         let avgPos = []
+         let avgNeg = []
+         let fCount = 0
+         let refCount = 0
+         let commentCount = 0
+         const {data} = results
+         for(const a in data){
+           avgCmpd.push(data[a][0]/data[a][3])
+           avgPos.push(data[a][1]/data[a][3])
+           avgNeg.push(data[a][2]/data[a][3])
+           fCount+=data[a][4]
+           refCount+=data[a][5]
+           commentCount+=data[a][6]
+         }
+         const newData = {}
+         newData[subreddit] = {'Compound': avgCmpd, 'Positive': avgPos, 'Negative': avgNeg, 'F*CK Count': fCount, 'Ref References': refCount, 'Comment Count': commentCount}
+         this.setState({...this.state, data: {...this.state.data, ...newData}}) 
+         this.fetchLeaderboardStatistics(i+1)
+       })
     }
   
 
   UNSAFE_componentWillMount() {
-    this.fetchLeaderboardStatistics()
+    this.fetchLeaderboardStatistics(0)
   }
 
   showFList() {
