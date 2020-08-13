@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Fade from 'react-reveal'
 import vader from 'vader-sentiment'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import { Card, Container, Col, Row } from 'react-bootstrap'
 import {BrowserView, isMobile} from 'react-device-detect'
 import Header from 'Components/Header'
@@ -41,7 +41,13 @@ export default class Game extends Component {
     }
   }
 
-  componentDidMount(){
+  componentDidUpdate(prevProps){
+    if(prevProps.location.pathname!==this.props.location.pathname)
+      this.fetchData()
+  }
+
+  fetchData(){
+    this.setState({...this.state, fetchedComments: false})
     const {home, away, timestamp, abbr} = this.props.match.params
     let after = 0
 
@@ -127,6 +133,11 @@ export default class Game extends Component {
           else
             this.setState({...this.state, awayLink: res.full_link})
         })
+
+  }
+
+  componentDidMount(){
+    this.fetchData()
   }
 
   addTones(data) {
