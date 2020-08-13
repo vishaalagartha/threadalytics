@@ -50,7 +50,7 @@ export default class Home extends Component {
           'date': m[5],
           'timestamp': date
        }
-    }).filter(g => g!==null)
+    }).filter(g => g!==null && g.home && g.away)
 
     this.setState({games: [...this.state.games, ...newGames]})
   }
@@ -72,6 +72,7 @@ export default class Home extends Component {
     return games.map((g, i) => {
       const homeAbbr = TEAM_TO_TEAM_ABBR[g['home'].toUpperCase()]
       const awayAbbr = TEAM_TO_TEAM_ABBR[g['away'].toUpperCase()]
+      if(!homeAbbr || !awayAbbr) return null
       const homeImageUrl = 'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + homeAbbr.toLowerCase() + '.png'
       const awayImageUrl = 'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + awayAbbr.toLowerCase() + '.png'
 

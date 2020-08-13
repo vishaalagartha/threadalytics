@@ -126,26 +126,24 @@ export default class SentimentChart extends Component {
                 .style('left', xScale(d.x)+20+'px')    
                 .style('top', yScale(d.y)+70+'px')
 
-             if(d.comments.length>0){
-               htmlStr = '<h3>Comments:</h3>'+d.comments.splice(0, 7).join('</br>')
+             htmlStr = '<h3>Comments:</h3>'+d.comments.splice(0, 7).join('</br>')
                
-               descripDiv.html(htmlStr)
-                  .style('left', () => {
-                    if(xScale(d.x)>width/2)
-                      return 100+'px'
-                    else
-                      return width-300+'px'
-                  })    
-                  .style('top', height/3+'px')
+             descripDiv.html(htmlStr)
+                .style('left', () => {
+                  if(xScale(d.x)>width/2)
+                    return 100+'px'
+                  else
+                    return width-300+'px'
+                })    
+                .style('top', height/3+'px')
 
-               descripDiv.transition()   
-                 .duration(200)   
-                 .style('opacity', 1)
-                  .style('background', () => {
-                    if(d.y>0) return '#67d463'
-                    return '#cf5757'
-                  })
-             }
+             descripDiv.transition()   
+               .duration(200)   
+               .style('opacity', 1)
+                .style('background', () => {
+                  if(d.y>0) return '#67d463'
+                  return '#cf5757'
+                })
 
 
            })         

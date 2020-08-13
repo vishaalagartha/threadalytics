@@ -32,7 +32,6 @@ export default class Compare extends Component {
     const subreddits = Object.values(TEAM_TO_SUBREDDIT)
     if(i>=subreddits.length) return
     const subreddit = subreddits[i].substr(2)
-    console.log('fetching', subreddit)
     fetch('https://threadalytics.com/api/leaderboard', {
         method: 'POST',
         headers: {
