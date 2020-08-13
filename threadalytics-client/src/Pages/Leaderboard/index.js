@@ -5,7 +5,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import BootstrapTable from 'react-bootstrap-table-next'
 import { RingLoader } from 'react-spinners'
 import Header from 'Components/Header'
-import { TEAM_TO_SUBREDDIT } from 'helpers/constants'
+import { TEAM_TO_SUBREDDIT, TEAM_ABBR_TO_TEAM } from 'helpers/constants'
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit'                     
 
 const { SearchBar } = Search
@@ -105,14 +105,14 @@ export default class Leaderboard extends Component {
     super(props)
 
     this.state = {
+      subreddit: '',
       lastUpdate: 0,
       tableData: []
     }
 
   }
 
-  fetchLeaderBoard(subreddit){
-
+  fetchLeaderBoard(subreddit) {
     fetch('https://threadalytics.com/api/leaderboard', {
         method: 'POST',
         headers: {
@@ -134,15 +134,22 @@ export default class Leaderboard extends Component {
           const ref_count = data[a][6]
           tableData.push({author: a, compound, pos, neg, num_comments, score, f_count, ref_count})
         }
-        this.setState({lastUpdate: result['timestamp'], tableData})
+        this.setState({...this.state, lastUpdate: result['timestamp'], tableData, subreddit})
       })
       .catch(e => {
-        this.setState({lastUpdate: -1, tableData: []})
+        this.setState({lastUpdate: -1, tableData: [], subreddit})
       })
   }
 
   UNSAFE_componentWillMount() {
-    this.fetchLeaderBoard('nba')
+    const {abbr} = this.props.match.params
+    if(abbr){
+      const subreddit = TEAM_TO_SUBREDDIT[TEAM_ABBR_TO_TEAM[abbr]].substr(2)
+      this.fetchLeaderBoard(subreddit)
+    }
+    else{
+      this.fetchLeaderBoard('nba')
+    }
   }
 
   renderLeaderBoard(){
@@ -164,7 +171,7 @@ export default class Leaderboard extends Component {
 
     return (
           <div style={{marginTop: '10px'}}>
-            <Row style={{marginTop: '2em'}}>
+            <Row style={{marginTop: '2em', marginLeft: '2em'}}>
               <h2>
                 2019-2020 NBA Season Statistics
               </h2>
@@ -272,27 +279,33 @@ export default class Leaderboard extends Component {
       <div style={containerStyles}>
         <Header fromTeam={this.props.match.params['abbr']}/>
         <Container style={{paddingRight: '5px', paddingLeft: '5px', fontSize: '10px', background: 'white'}} className='rounded'>
-          <Row style={{marginTop: '1em', marginBottom: '1em', justifyContent: 'center'}}>
-            <h1>
-              Choose your subreddit:
-            </h1>
-          </Row>
-          <Row style={{marginTop: '1em', marginBottom: '1em', justifyContent: 'center'}}>
-            <Form.Group>
-              <Form.Control as='select' size='sm' onChange={e => { 
-                this.setState({...this.state, lastUpdate: 0})
-                this.fetchLeaderBoard(e.target.value.substr(2))
-              }}>
-                {
-                  ['r/nba', ...Object.values(TEAM_TO_SUBREDDIT)].map((sub, i) => {
-                    return (
-                      <option key={i}>{sub}</option>
-                    )
-                  })
-                }
-              </Form.Control>
-            </Form.Group>
-          </Row>
+          { 
+            this.props.match.params.abbr ? null
+            :
+            <div>
+              <Row style={{marginTop: '1em', marginBottom: '1em', justifyContent: 'center'}}>
+                <h1>
+                  Choose your subreddit:
+                </h1>
+              </Row>
+              <Row style={{marginTop: '1em', marginBottom: '1em', justifyContent: 'center'}}>
+                <Form.Group>
+                  <Form.Control as='select' size='sm' onChange={e => { 
+                    this.setState({...this.state, lastUpdate: 0})
+                    this.fetchLeaderBoard(e.target.value.substr(2))
+                  }}>
+                    {
+                      ['r/nba', ...Object.values(TEAM_TO_SUBREDDIT)].map((sub, i) => {
+                        return (
+                          <option key={i}>{sub}</option>
+                        )
+                      })
+                    }
+                  </Form.Control>
+                </Form.Group>
+              </Row>
+            </div>
+          }
           {this.state.lastUpdate===0 ?
             <div style={{display: 'flex', justifyContent: 'center', marginTop: '5em'}}>
               <RingLoader
