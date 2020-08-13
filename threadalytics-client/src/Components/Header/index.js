@@ -87,6 +87,9 @@ export default class Header extends Component {
               :
               null
             }
+            <Nav.Link href='/user'>
+              Profiles
+            </Nav.Link>
             <Nav.Link href='/about'>About Me</Nav.Link>
           </Nav>
         </Navbar.Collapse>

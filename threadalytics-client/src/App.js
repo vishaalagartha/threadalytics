@@ -5,6 +5,7 @@ import Team from 'Pages/Team'
 import Game from 'Pages/Game'
 import Leaderboard from 'Pages/Leaderboard'
 import Compare from 'Pages/Compare'
+import User from 'Pages/User'
 import About from 'Pages/About'
 
 class App extends Component {
@@ -18,6 +19,7 @@ class App extends Component {
         <Route exact path='/compare' params={{fromHeader: true}} component={Compare} />
         <Route exact path='/leaderboard/' params={{fromHeader: true}} component={Leaderboard} />
         <Route exact path='/leaderboard/:abbr' params={{fromHeader: true}} component={Leaderboard} />
+        <Route exact path='/user/' params={{fromHeader: true}} component={User} />
         <Route exact path='/about' params={{fromHeader: true}} component={About} />
       </BrowserRouter>
     )
