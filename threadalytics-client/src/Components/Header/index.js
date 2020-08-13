@@ -79,17 +79,15 @@ export default class Header extends Component {
                   :
                   TEAM_TO_SUBREDDIT[TEAM_ABBR_TO_TEAM[this.props.fromTeam]] + ' Leaderboard'
               }
-              </Nav.Link> 
+            </Nav.Link> 
+            { window.innerWidth>760 ? 
+              <Nav.Link href='/compare'>
+                Compare Subreddits
+              </Nav.Link>
+              :
+              null
+            }
             <Nav.Link href='/about'>About Me</Nav.Link>
-      {/*
-          { window.innerWidth>760 ? 
-            <Nav.Link href='/compare'>
-              Compare Subreddits
-            </Nav.Link>
-            :
-            null
-          }
-        */}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

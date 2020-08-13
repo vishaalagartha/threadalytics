@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Card, Row, Col } from 'react-bootstrap'
 import Header from 'Components/Header'
-import { leaderboardEndpoints } from 'helpers/constants'
+import { TEAM_TO_SUBREDDIT } from 'helpers/constants'
 import { drawCommentChart, drawSentimentChart, drawDonutChart } from './chart'
 
 
@@ -29,33 +29,40 @@ export default class Compare extends Component {
   }
 
   fetchLeaderboardStatistics(){
-    for(const subreddit in leaderboardEndpoints){
-      const url = leaderboardEndpoints[subreddit]
-      fetch(url)
-         .then(res => res.json())
-         .then(results => {
+    for(const t in TEAM_TO_SUBREDDIT){
+      const subreddit = TEAM_TO_SUBREDDIT[t].substr(2)
+      fetch('https://threadalytics.com/api/leaderboard', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({subreddit})
+        })
+        .then(res => res.json())
+        .then(results => {
            let avgCmpd = []
            let avgPos = []
            let avgNeg = []
            let fCount = 0
            let refCount = 0
            let commentCount = 0
-           for(let i=0; i<results.data.author.length; i++){
-             avgCmpd.push(results.data.compound_sum[i]/results.data.num_comments[i])
-             avgPos.push(results.data.pos_sum[i]/results.data.num_comments[i])
-             avgNeg.push(results.data.neg_sum[i]/results.data.num_comments[i])
-             fCount+=results.data.f_count[i]
-             refCount+=results.data.ref_count[i]
-             commentCount+=results.data.num_comments[i]
+           const {data} = results
+           for(const a in data){
+             avgCmpd.push(data[a][0]/data[a][3])
+             avgPos.push(data[a][1]/data[a][3])
+             avgNeg.push(data[a][2]/data[a][3])
+             fCount+=data[a][4]
+             refCount+=data[a][5]
+             commentCount+=data[a][6]
            }
-           this.setState({...this.state, 
-             data: {...this.state.data, 
-             [subreddit]: {'Compound': avgCmpd, 'Positive': avgPos, 'Negative': avgNeg, 'F*CK Count': fCount, 'Ref References': refCount, 'Comment Count': commentCount}
-             }
-           })
+           const newData = {}
+           newData[subreddit] = {'Compound': avgCmpd, 'Positive': avgPos, 'Negative': avgNeg, 'F*CK Count': fCount, 'Ref References': refCount, 'Comment Count': commentCount}
+            this.setState({...this.state, data: {...this.state.data, ...newData}}) 
+
          })
+       }
     }
-  }
+  
 
   UNSAFE_componentWillMount() {
     this.fetchLeaderboardStatistics()
