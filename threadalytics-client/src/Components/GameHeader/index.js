@@ -102,7 +102,7 @@ export default class GameHeader extends Component {
                   </p>
                   :
                   <p>
-                  {TEAM_TO_SUBREDDIT[this.props.home]} Game Thread Analysis
+                  {TEAM_TO_SUBREDDIT[TEAM_ABBR_TO_TEAM[this.props.team]]} Game Thread Analysis
                   </p>
                 }
               </div>
