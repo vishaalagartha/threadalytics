@@ -194,6 +194,7 @@ export default class Game extends Component {
 
   renderResources() {
     const {home, away, threadLink} = this.state
+    if(!home || !away) return null
     const homeAbbr = TEAM_TO_TEAM_ABBR[home.toUpperCase()]
     const awayAbbr = TEAM_TO_TEAM_ABBR[away.toUpperCase()]
     const { abbr, timestamp } = this.props.match.params 
