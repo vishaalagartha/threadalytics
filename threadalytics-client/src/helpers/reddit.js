@@ -27,10 +27,16 @@ export const getTeamGameThread = (teamAbbr, opponentAbbr, timestamp) => {
     query=`GDT`
   else if(teamSubreddit==='CharlotteHornets')
     query=`Charlotte%20Hornets`
-  const url = `https://api.pushshift.io/reddit/search/submission/?subreddit=${teamSubreddit}&after=${timestamp}&before=${before}&q=${query}`
+  const url = `https://api.pushshift.io/reddit/search/submission/?subreddit=${teamSubreddit}&after=${timestamp}&before=${before}&q=${query}&sort=desc`
   return fetch(url)
     .then(res => res.json())
     .then(res => {
-      return res.data[0]
+      const {data} = res
+      for(const i in data){
+        const title = data[i].title.toLowerCase()
+        if(title.includes('post') || title.includes('pre'))
+          continue
+        return data[i]
+      }
     })
 }
