@@ -122,7 +122,6 @@ export const drawCommentChart = (data) => {
 }
 
 export const drawSentimentChart = (data, key) => {
-    //console.log(data)
     const id = '#'+key.toLowerCase()+'Chart'
     const svg = d3.select(id)
     if(svg.size()===0) return

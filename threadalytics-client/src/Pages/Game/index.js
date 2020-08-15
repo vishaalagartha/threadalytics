@@ -7,6 +7,7 @@ import {BrowserView, isMobile} from 'react-device-detect'
 import Header from 'Components/Header'
 import GameHeader from 'Components/GameHeader'
 import GameSummary from './Summary'
+import TrendingPlayers from './TrendingPlayers'
 import FStatistics from './FStatistics'
 import RefStatistics from './RefStatistics'
 import MVP from './MVP'
@@ -16,8 +17,10 @@ import FrequencyChart from './FrequencyChart'
 import SentimentChart from './SentimentChart'
 import FlairStats from './FlairStats'
 import WordCloud from './WordCloud'
+//import ArtificialComments from './ArtificialComments'
 import { RingLoader } from 'react-spinners'
 import { colors, TEAM_ABBR_TO_TEAM, TEAM_TO_TEAM_ABBR } from 'helpers/constants'
+import { data } from 'helpers/mockData'
 import { getNBAGameThread, getTeamGameThread } from 'helpers/reddit'
 
 export default class Game extends Component { 
@@ -268,6 +271,11 @@ export default class Game extends Component {
                 </BrowserView>
               </Col>
             </Row>
+            <Row style={{paddingTop: '1em'}}>
+              <Col xs={12} style={{height: '600px'}}>
+                <TrendingPlayers home={this.props.match.params.home} away={this.props.match.params.away} comments={this.state.comments}/>
+              </Col>
+            </Row>
             <Row style={{paddingTop: '1em', marginBottom: '1em', height: '400px'}}>
                 <Col xs={12} md={8} style={{height: '400px'}}>
                   <FrequencyChart comments={this.state.comments}/>
@@ -315,6 +323,13 @@ export default class Game extends Component {
                 <RefStatistics comments={this.state.comments}/>
               </Col>
             </Row>
+            {/*
+            <Row>
+              <Col xs={12} style={window.innerWidth<=760 ? {paddingTop: '1em'} : {}}>
+                <ArtificialComments comments={this.state.comments}/>
+              </Col>
+            </Row>
+            */}
           </Container>
       )
     }
