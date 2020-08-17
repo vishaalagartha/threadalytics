@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { Container, Row, Col, InputGroup, FormControl, Button } from 'react-bootstrap'
 import { FaCaretUp, FaCaretDown } from 'react-icons/fa'
 import Header from 'Components/Header'
@@ -62,24 +62,19 @@ const columns = [{
 }]
 
 
-export default class User extends Component { 
+const User = () => { 
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      username: '',
-      userData: [],
-      hasData: true
-    }
-  }
+  const [username, setUsername] = useState('')
+  const [userData, setUserData] = useState([])
+  const [hasData, setHasData] = useState(true)
 
-  handleSearch = () => {
+  const handleSearch = () => {
     fetch('https://threadalytics.com/api/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({username: this.state.username})
+        body: JSON.stringify({username})
       })
       .then(res => res.json())
       .then(res => {
@@ -95,75 +90,72 @@ export default class User extends Component {
             'ref_count': r[7]
           })
         })
-        this.setState({...this.state, userData, hasData: userData.length>0}) 
+        setUserData(userData)
+        setHasData(userData.length>0)
       })
-
-
   }
 
-  render() {
-    return (
-      <div>
-        <Header fromTeam={null}/>
-        <Container style={{fontSize: '10px'}}>
-          <Fade delay={1000} duration={1000}>
-            <Row className='text-center' style={{marginTop: '3%'}}>
-              <Col xs={12}>
-                <h4>
-                  Search for a user using their reddit profile
-                </h4>
-              </Col>
-            </Row>
-          </Fade>
-          <Row style={{marginTop: '5%', justifyContent: 'center'}}>
-            <Col xs={6}>
-              <Fade delay={2000} duration={1500}>
-                <h5 className='text-center'>
-                  <InputGroup>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text>/u/</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <FormControl
-                      placeholder='username'
-                      value={this.state.search}
-                      onChange={e => {
-                        this.setState({...this.state, username: e.target.value})
-                      }}
-                    />
-                    <InputGroup.Append>
-                      <Button disabled={this.state.username.length===0} onClick={this.handleSearch} variant='primary'>Search</Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                </h5>
-              </Fade>
+  return (
+    <div>
+      <Header fromTeam={null}/>
+      <Container style={{fontSize: '10px'}}>
+        <Fade delay={1000} duration={1000}>
+          <Row className='text-center' style={{marginTop: '3%'}}>
+            <Col xs={12}>
+              <h4>
+                Search for a user using their reddit profile
+              </h4>
             </Col>
           </Row>
-          { 
-            !this.state.hasData ?
-            <Row style={{marginTop: '5%', justifyContent: 'center'}}>
-              <h4>
-                Sorry, we could not find this user!
-              </h4>
-            </Row>
+        </Fade>
+        <Row style={{marginTop: '5%', justifyContent: 'center'}}>
+          <Col xs={6}>
+            <Fade delay={2000} duration={1500}>
+              <h5 className='text-center'>
+                <InputGroup>
+                  <InputGroup.Prepend>
+                    <InputGroup.Text>/u/</InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <FormControl
+                    placeholder='username'
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                  />
+                  <InputGroup.Append>
+                    <Button disabled={username.length===0} onClick={handleSearch} variant='primary'>Search</Button>
+                  </InputGroup.Append>
+                </InputGroup>
+              </h5>
+            </Fade>
+          </Col>
+        </Row>
+        { 
+          !hasData ?
+          <Row style={{marginTop: '5%', justifyContent: 'center'}}>
+            <h4>
+              Sorry, we could not find this user!
+            </h4>
+          </Row>
+          :
+          null
+        }
+        {
+          userData.length ?
+            <BootstrapTable
+              keyField='subreddit'
+              data={ userData }
+              columns={ columns }
+              striped
+              hover
+              condensed
+              style={{fontSize: '1px'}}
+            />
             :
             null
-          }
-          {
-            this.state.userData.length ?
-              <BootstrapTable
-                keyField='subreddit'
-                data={ this.state.userData }
-                columns={ columns }
-                striped
-                hover
-                condensed
-                style={{fontSize: '1px'}}
-              />
-              :
-              null
-          }
-        </Container>
-      </div>
-    )
-  }
+        }
+      </Container>
+    </div>
+  )
 }
+
+export default User

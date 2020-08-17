@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Card} from 'react-bootstrap'
 import {GoJersey} from 'react-icons/go'
-import {TEAM_ABBR_TO_TEAM} from 'helpers/constants'
+import {colors} from 'helpers/constants'
 import * as d3 from 'd3'
 
 const tipStyle = {
@@ -19,38 +19,6 @@ const tipStyle = {
   zIndex: 1
 }
 
-const colors = {'Hawks': {'main_color': 'red', 'secondary_color': 'white'},
-   'Bucks': {'main_color': 'green', 'secondary_color': 'cream'},
-   'Celtics': {'main_color': 'green', 'secondary_color': 'white'},
-   'Nets': {'main_color': 'black', 'secondary_color': 'white'},
-   'Bulls': {'main_color': 'red', 'secondary_color': 'black'},
-   'Hornets': {'main_color': 'purple', 'secondary_color': 'teal'},
-   'Cavaliers': {'main_color': 'wine', 'secondary_color': 'gold'},
-   'Mavericks': {'main_color': 'blue', 'secondary_color': 'silver'},
-   'Nuggets': {'main_color': 'blue', 'secondary_color': 'gold'},
-   'Pistons': {'main_color': 'blue', 'secondary_color': 'red'},
-   'Warriors': {'main_color': 'gold', 'secondary_color': 'blue'},
-   '76ers': {'main_color': 'blue', 'secondary_color': 'red'},
-   'Rockets': {'main_color': 'red', 'secondary_color': 'silver'},
-   'Pacers': {'main_color': 'blue', 'secondary_color': 'gold'},
-   'Clippers': {'main_color': 'red', 'secondary_color': 'blue'},
-   'Lakers': {'main_color': 'purple', 'secondary_color': 'gold'},
-   'Timberwolves': {'main_color': 'blue', 'secondary_color': 'green'},
-   'Grizzlies': {'main_color': 'midnightBlue',
-       'secondary_color': 'bealeStreetBlue'},
-   'Heat': {'main_color': 'red', 'secondary_color': 'black'},
-   'Pelicans': {'main_color': 'blue', 'secondary_color': 'red'},
-   'Knicks': {'main_color': 'blue', 'secondary_color': 'orange'},
-   'Thunder': {'main_color': 'blue', 'secondary_color': 'orange'},
-   'Magic': {'main_color': 'blue', 'secondary_color': 'silver'},
-   'Suns': {'main_color': 'orange', 'secondary_color': 'purple'},
-   'Blazers': {'main_color': 'red', 'secondary_color': 'black'},
-   'Kings': {'main_color': 'purple', 'secondary_color': 'silver'},
-   'Spurs': {'main_color': 'silver', 'secondary_color': 'black'},
-   'Raptors': {'main_color': 'red', 'secondary_color': 'silver'},
-   'Jazz': {'main_color': 'navy', 'secondary_color': 'yellow'},
-   'Wizards': {'main_color': 'navy', 'secondary_color': 'red'},
-   'unknown': {'main_color': 'black', 'secondary_color': 'black'}}
 
 export default class TrendingPlayers extends Component {
 
@@ -135,7 +103,7 @@ export default class TrendingPlayers extends Component {
     let sortable = []
     for(const d in data){
       if(data[d].count>0)
-        sortable.push({x: d, y: data[d].count, color: data[d].team, comments: data[d].comments})
+        sortable.push({x: d, y: data[d].count, color: colors[data[d].team].main_color, comments: data[d].comments})
     }
     sortable.sort((a, b) => a.y-b.y)
 
@@ -163,11 +131,7 @@ export default class TrendingPlayers extends Component {
                 .data(sortable)
                 .enter().append('rect')
                 .attr('class', 'bar')
-                .attr('fill', d => {
-                  const l = TEAM_ABBR_TO_TEAM[d.color].split(' ')
-                  const team = l[l.length-1]
-                  return colors[team].main_color
-                })
+                .attr('fill', d => d.color)
                 .attr('x', d => xScale(d.x))
                 .attr('width', xScale.bandwidth())
                 .attr('y', d => yScale(d.y))

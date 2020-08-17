@@ -1,51 +1,20 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Navbar, Nav, NavDropdown, Image } from 'react-bootstrap'
+import { isMobile } from 'react-device-detect'
 import { TEAM_TO_SUBREDDIT, TEAM_ABBR_TO_TEAM, TEAM_TO_TEAM_ABBR } from 'helpers/constants'
 import logo from 'assets/images/logo.png'
 
-const teams = ['Atlanta Hawks',
-   'Boston Celtics',
-   'Brooklyn Nets',
-   'Charlotte Hornets',
-   'Chicago Bulls',
-   'Cleveland Cavaliers',
-   'Dallas Mavericks',
-   'Denver Nuggets',
-   'Detroit Pistons',
-   'Golden State Warriors',
-   'Houston Rockets',
-   'Indiana Pacers',
-   'Los Angeles Clippers',
-   'Los Angeles Lakers',
-   'Memphis Grizzlies',
-   'Miami Heat',
-   'Milwaukee Bucks',
-   'Minnesota Timberwolves',
-   'New Orleans Pelicans',
-   'New York Knicks',
-   'Oklahoma City Thunder',
-   'Orlando Magic',
-   'Philadelphia 76ers',
-   'Phoenix Suns',
-   'Portland Trail Blazers',
-   'Sacramento Kings',
-   'San Antonio Spurs',
-   'Toronto Raptors',
-   'Utah Jazz',
-   'Washington Wizards']
+const Header = ({team}) => {
+  const titles = ['A-C', 'D-L', 'M-O', 'P-Z']
 
-export default class Header extends Component {
-
-  getTeams(title){
+  const getTeams = title => {
     const c1 = title[0]
     const c2 = title[2]+'z'
-    const filteredTeams = teams.filter(t => t>c1 && t<c2)
+    const filteredTeams = Object.keys(TEAM_TO_SUBREDDIT).filter(t => t>c1 && t<c2)
     return filteredTeams
   }
 
-  render() {
-    const titles = ['A-C', 'D-L', 'M-O', 'P-Z']
-    return (
+  return (
       <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
         <Navbar.Brand href='/'>
           <Image src={logo} width='30' height='30' roundedCircle />
@@ -62,7 +31,7 @@ export default class Header extends Component {
                 return (
                   <NavDropdown key={i} title={t}>
                     {
-                      this.getTeams(t).map((el, i) => {
+                      getTeams(t).map((el, i) => {
                         return (
                         <NavDropdown.Item key={i} href={'/teams/'+TEAM_TO_TEAM_ABBR[el.toUpperCase()]}>{el}</NavDropdown.Item>
                         )
@@ -72,20 +41,15 @@ export default class Header extends Component {
                 )
               })
             }
-            <Nav.Link href={this.props.fromTeam===null || this.props.fromTeam===undefined ? '/leaderboard' : '/leaderboard/' + this.props.fromTeam}>
-              {
-                this.props.fromTeam===null || this.props.fromTeam===undefined ? 
-                  'Leaderboards'
-                  :
-                  TEAM_TO_SUBREDDIT[TEAM_ABBR_TO_TEAM[this.props.fromTeam]] + ' Leaderboard'
-              }
+            <Nav.Link href={team ? '/leaderboard/' + team : '/leaderboard'}>
+              {team ? TEAM_TO_SUBREDDIT[TEAM_ABBR_TO_TEAM[team]] + ' Leaderboard' : 'Leaderboards'}
             </Nav.Link> 
-            { window.innerWidth>760 ? 
+            { isMobile ? 
+              null
+              :
               <Nav.Link href='/compare'>
                 Compare Subreddits
               </Nav.Link>
-              :
-              null
             }
             <Nav.Link href='/user'>
               Profiles
@@ -94,6 +58,8 @@ export default class Header extends Component {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-    )
-  }
+   )
+
 }
+
+export default Header

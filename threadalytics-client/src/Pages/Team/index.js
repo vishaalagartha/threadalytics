@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { Container, Row, Col, Image } from 'react-bootstrap'
 import Header from 'Components/Header'
 import { Link } from 'react-router-dom'
@@ -8,56 +9,49 @@ import { TEAM_TO_TEAM_ABBR, TEAM_ABBR_TO_TEAM, TEAM_TO_SUBREDDIT } from 'helpers
 
 const styles = {
   analysis: {
-        display: 'block', 
-        textAlign: 'center',
-        background: 'rgba(0,0,0,0.025)',
-        border: '2px solid rgba(0,0,0,0.2)',
-        textDecoration: 'none',
-        cursor: 'pointer',
-        color: '#111',
-        fontWeight: 600,
-        margin: '1em 0.5em 1em 0.5em',
-        width: '33%',
-        padding: '1em 0.5em 1em 0.5em',
+      display: 'block', 
+      textAlign: 'center',
+      background: 'rgba(0,0,0,0.025)',
+      border: '2px solid rgba(0,0,0,0.2)',
+      textDecoration: 'none',
+      cursor: 'pointer',
+      color: '#111',
+      fontWeight: 600,
+      margin: '1em 0.5em 1em 0.5em',
+      width: '33%',
+      padding: '1em 0.5em 1em 0.5em',
   }
 }
 
-export default class Team extends Component { 
+const Team = () => { 
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      games: [],
-      team: null,
-      teamAbbr: null,
-      teamSubreddit: null
-    }
-  }
+  const [games, setGames] = useState([])
+  const params = useParams()
 
+  const teamAbbr = params.abbr
+  const team = TEAM_ABBR_TO_TEAM[teamAbbr] 
+  const teamSubreddit = TEAM_TO_SUBREDDIT[team].substring(2)
 
-  componentDidMount(){
-    let after = 1571731200
-    let before = parseInt(+ new Date()/1000)
-    const teamAbbr = this.props.match.params.abbr
-    const team = TEAM_ABBR_TO_TEAM[teamAbbr] 
-    const teamSubreddit = TEAM_TO_SUBREDDIT[team].substring(2)
-    this.setState({...this.state, teamAbbr, team, teamSubreddit})
-    this.fetchGames(after, before, teamSubreddit)
-  }
+  useEffect(() => {
+    const after = 1571731200
+    const before = parseInt(+ new Date()/1000)
+    fetchGames(after, before, teamSubreddit)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  addGames(data) {
+  const addGames = data => {
     const newGames = data.map(d => {
       let opponent = null
       for(let i=0; i<Object.keys(TEAM_TO_SUBREDDIT).length; i++){
         const l = Object.keys(TEAM_TO_SUBREDDIT)[i].split(' ')
         const s = l[l.length-1]
         if(d.title.toLowerCase().includes(s.toLowerCase())){
-          const team = Object.keys(TEAM_TO_SUBREDDIT)[i]
-          if(team!==this.state.team){
-            if(opponent && team.length>opponent.length)
-              opponent = team
+          const t = Object.keys(TEAM_TO_SUBREDDIT)[i]
+          if(t!==team){
+            if(opponent && t.length>opponent.length)
+              opponent = t 
             else if(!opponent)
-              opponent = team
+              opponent = t
           }
         }
       }
@@ -73,7 +67,7 @@ export default class Team extends Component {
       const year = date.getFullYear()
       date.setHours(0, 0, 0, 0)
       return {
-        'home': this.state.team,
+        'home': team,
         'away': opponent,
         'timestamp': date.getTime()/1000,
         'date': `${month} ${dayNum}, ${year}`,
@@ -81,10 +75,10 @@ export default class Team extends Component {
       }
     }).filter(g => g!==null)
 
-    this.setState({games: [...this.state.games, ...newGames]})
+    setGames(games => [...games, ...newGames])
   }
 
-  fetchGames(after, before, teamSubreddit){
+  const fetchGames = (after, before, teamSubreddit) => {
     let query = `game%20thread`
     if(teamSubreddit==='NOLAPelicans')
       query=`GDT`
@@ -100,16 +94,16 @@ export default class Team extends Component {
                 return false
               return true
             })
-          this.addGames(data)
+          addGames(data)
           const nResults = result.data.length 
           if(nResults===25 && data.length>0) {
             before = data[data.length-1].created_utc
-            this.fetchGames(after, before, teamSubreddit)
+            fetchGames(after, before, teamSubreddit)
           }
         })
   }
 
-  renderGamesForDate = (games) => {
+  const renderGamesForDate = (games) => {
     return games.map((g, i) => {
       const homeAbbr = TEAM_TO_TEAM_ABBR[g['home'].toUpperCase()]
       const awayAbbr = TEAM_TO_TEAM_ABBR[g['away'].toUpperCase()]
@@ -118,7 +112,7 @@ export default class Team extends Component {
 
       return (
          <Col key={i} xs={12} style={styles.analysis}>
-          <Link to={{pathname: `/teams/${this.state.teamAbbr}/games/${homeAbbr}@${awayAbbr}-${g['timestamp']}`}}>
+          <Link to={{pathname: `/teams/${teamAbbr}/games/${homeAbbr}@${awayAbbr}-${g['timestamp']}`}}>
             <Row>
               <Col xs={6} md={3}>
                 <Image alt={g['Away']} src={awayImageUrl} roundedCircle fluid/>
@@ -146,11 +140,10 @@ export default class Team extends Component {
     })
   }
 
-  renderGames = () => {
-    const dates = [...new Set(this.state.games.map(el => el['date']))]
-
+  const renderGames = () => {
+    const dates = [...new Set(games.map(el => el['date']))]
     return dates.map((d, i) => {
-      const games = this.state.games.filter(el => el['date']===d).splice(0, 1)
+      const dateGames = games.filter(el => el['date']===d).splice(0, 1)
       return (
           <Slide left delay={0} duration={1000} key={i}>
             <Row>
@@ -159,31 +152,29 @@ export default class Team extends Component {
                 </Col>
              </Row>
              <Row>
-               {this.renderGamesForDate(games)}
+               {renderGamesForDate(dateGames)}
              </Row>
           </Slide>
        )
     })
   }
 
-  render() {
-    let backgroundImage = this.props.match.params['abbr'] 
-    if(backgroundImage!==undefined){
-      backgroundImage= `url(${'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + backgroundImage.toLowerCase() + '.png'})`
-    }
-    const containerStyles = {
-      backgroundImage,
-      backgroundPosition: 'top',
-    }
-    return (
-      <div style={containerStyles}>
-        <Header fromTeam={this.props.match.params.abbr}/>
-        <Container style={{backgroundColor: 'white'}} className='rounded'>
-          <Col xs={12} style={{margin: '2em 0em 2em 0em'}}>
-            {this.renderGames()}
-          </Col>
-        </Container>
-      </div>
-    )
+  const backgroundImage = teamAbbr ? `url(${'http://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/' + teamAbbr.toLowerCase() + '.png'})` : null
+  const containerStyles = {
+    backgroundImage,
+    backgroundPosition: 'top',
   }
+
+  return (
+    <div style={containerStyles}>
+      <Header team={teamAbbr}/>
+      <Container style={{backgroundColor: 'white'}} className='rounded'>
+        <Col xs={12} style={{margin: '2em 0em 2em 0em'}}>
+          {renderGames()}
+        </Col>
+      </Container>
+    </div>
+  )
 }
+
+export default Team
