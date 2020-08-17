@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import Fade from 'react-reveal'
 import {FaCloud} from 'react-icons/fa'
-import {stopwords} from './stopwords'
+import {stopwords} from 'helpers/constants'
 import * as d3 from 'd3'
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Cloud from './wrapper'

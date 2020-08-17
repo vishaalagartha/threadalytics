@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Card} from 'react-bootstrap'
 import {GoJersey} from 'react-icons/go'
-import {colors} from 'helpers/constants'
+import {colors, stopwords} from 'helpers/constants'
 import * as d3 from 'd3'
 
 const tipStyle = {
@@ -80,7 +80,7 @@ export default class TrendingPlayers extends Component {
         const l = players[p].name.split(' ')
         for(const w in l){
           const name = l[w].replace(/[^0-9a-z]/gi, '').toLowerCase()
-          if(comments[c].body.toLowerCase().includes(name)){
+          if(comments[c].body.toLowerCase().includes(' '+name+' ') && stopwords.indexOf(name)===-1){
            data[players[p].name].comments.push(comments[c].body)
            data[players[p].name].count+=1 
            break
