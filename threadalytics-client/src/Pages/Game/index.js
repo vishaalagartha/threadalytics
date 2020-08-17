@@ -6,6 +6,7 @@ import {BrowserView, isMobile} from 'react-device-detect'
 import Header from 'Components/Header'
 import GameHeader from 'Components/GameHeader'
 import GameSummary from './Summary'
+import Resources from './Resources'
 import TrendingPlayers from './TrendingPlayers'
 import FStatistics from './FStatistics'
 import RefStatistics from './RefStatistics'
@@ -48,7 +49,7 @@ const Game = () => {
           setHomeRec(m[2])
           setAwayRec(m[4])
           if(!abbr){
-            setLinks({...links, nbaLink: res.full_link, threadLink: res.full_link})
+            setLinks(links => { return {...links, nba: res.full_link, thread: res.full_link}})
             fetchGameComments(res.id, timestamp, [])
                      .then(res => {
                        setFetched(true)
@@ -56,14 +57,14 @@ const Game = () => {
                      })
           }
           else
-            setLinks({...links, nbaLink: res.full_link})
+            setLinks(links => { return {...links, nba: res.full_link}})
         })
         .catch(err => {
           getNBAGameThread(awayAbbr, homeAbbr, timestamp)
               .then(res => {
                 if(!res) return
                 if(!abbr){
-                  setLinks({...links, nbaLink: res.full_link, threadLink: res.full_link})
+                  setLinks(links => { return {...links, nba: res.full_link, thread: res.full_link}})
                   fetchGameComments(res.id, timestamp, [])
                      .then(res => {
                        setFetched(true)
@@ -71,7 +72,7 @@ const Game = () => {
                      })
                 }
                 else{
-                  setLinks({...links, nbaLink: res.full_link})
+                  setLinks(links => { return {...links, nba: res.full_link}})
                 }
               })
        })
@@ -80,7 +81,7 @@ const Game = () => {
         .then(res => {
           if(!res) return
           if(homeAbbr===abbr){
-            setLinks({...links, homeLink: res.full_link, threadLink: res.full_link})
+            setLinks(links => { return {...links, home: res.full_link, thread: res.full_link}})
             fetchGameComments(res.id, timestamp, [])
                    .then(res => {
                      setFetched(true)
@@ -88,14 +89,14 @@ const Game = () => {
                    })
           }
           else
-            setLinks({...links, homeLink: res.full_link})
+            setLinks(links => { return {...links, home: res.full_link}})
         })
 
     getTeamGameThread(awayAbbr, homeAbbr, timestamp)
         .then(res => {
           if(!res) return
           if(awayAbbr===abbr){
-            setLinks({...links, awayLink: res.full_link, threadLink: res.full_link})
+            setLinks(links => { return {...links, away: res.full_link, thread: res.full_link}})
             fetchGameComments(res.id, timestamp, [])
                    .then(res => {
                      setFetched(true)
@@ -103,7 +104,7 @@ const Game = () => {
                    })
           }
           else
-            setLinks({...links, awayLink: res.full_link})
+            setLinks(links => { return {...links, away: res.full_link}})
         })
 
   }
@@ -130,6 +131,13 @@ const Game = () => {
                   if(fetched && comments.length>0){
                     return ( 
                       <Container className='text-center' style={{paddingBottom: '1em'}}>
+                        <Row style={{paddingTop: '1em'}}>
+                          <Col xs={12} id='wordCloudCol'>
+                            <Fade>
+                              <Resources home={homeTeam} away={awayTeam} threadLink={links.thread}/>
+                            </Fade>
+                          </Col>
+                        </Row>
                         <Row style={{paddingTop: '1em'}}>
                           <Col xs={12} id='wordCloudCol'>
                             <Fade>

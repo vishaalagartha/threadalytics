@@ -1,10 +1,14 @@
+import React from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { Card, Col, Row } from 'react-bootstrap'
+import { TEAM_TO_TEAM_ABBR } from 'helpers/constants'
 
-const Resources = ({home away, threadLink}) => {
+const Resources = ({home, away, threadLink}) => {
+    const params = useParams()
     if(!home || !away) return null
+    const {abbr, timestamp} = params
     const homeAbbr = TEAM_TO_TEAM_ABBR[home.toUpperCase()]
     const awayAbbr = TEAM_TO_TEAM_ABBR[away.toUpperCase()]
-    const { abbr, timestamp } = this.props.match.params 
     let s1, s2, link1, link2
     if(abbr){
       if(homeAbbr===abbr){
@@ -47,4 +51,7 @@ const Resources = ({home away, threadLink}) => {
         </Row>
       </Card>
     )
-  }
+}
+
+export default Resources
+
