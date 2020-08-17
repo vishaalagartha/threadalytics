@@ -90,7 +90,7 @@ const Team = () => {
         result => {
           const data = result.data.filter(el =>
             {
-              if(el.title.toLowerCase().includes('post') || el.title.toLowerCase().includes('pre') || el.title.toLowerCase().includes('discussion') || el.title.toLowerCase().includes('day'))
+              if(el.title.toLowerCase().includes('post') || el.title.toLowerCase().includes('pre') || el.title.toLowerCase().includes('discussion') || (el.title.toLowerCase().includes('day') && teamSubreddit!=='UtahJazz'))
                 return false
               return true
             })
