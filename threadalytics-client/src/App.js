@@ -6,6 +6,7 @@ import Game from 'Pages/Game'
 import Leaderboard from 'Pages/Leaderboard'
 import Compare from 'Pages/Compare'
 import User from 'Pages/User'
+import Guess from 'Pages/Guess'
 import About from 'Pages/About'
 
 const App = () => 
@@ -18,6 +19,7 @@ const App = () =>
       <Route exact path='/leaderboard/' params={{fromHeader: true}} component={Leaderboard} />
       <Route exact path='/leaderboard/:abbr' params={{fromHeader: true}} component={Leaderboard} />
       <Route exact path='/user/' params={{fromHeader: true}} component={User} />
+      <Route exact path='/guess-that-flair/' params={{fromHeader: true}} component={Guess} />
       <Route exact path='/about' params={{fromHeader: true}} component={About} />
     </BrowserRouter>
 
