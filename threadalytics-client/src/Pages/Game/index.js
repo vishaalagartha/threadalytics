@@ -18,10 +18,19 @@ import SentimentChart from './SentimentChart'
 import FlairStats from './FlairStats'
 import WordCloud from './WordCloud'
 import { RingLoader } from 'react-spinners'
+import vader from 'vader-sentiment'
 import { colors, TEAM_ABBR_TO_TEAM } from 'helpers/constants'
 //import { data } from 'helpers/mockData'
 import { getNBAGameThread, getTeamGameThread } from 'helpers/reddit'
-import { fetchGameComments } from 'helpers/comments'
+//import { fetchGameComments } from 'helpers/comments'
+//
+const addTones = data => {
+  const newData = data.filter(d => (d.author!=='[deleted]' && d.body!=='[deleted]'))
+  newData.forEach(d => {
+    d.tones = vader.SentimentIntensityAnalyzer.polarity_scores(d.body)
+  })
+  return newData
+}
 
 const Game = () => { 
   const location = useLocation()
@@ -31,11 +40,59 @@ const Game = () => {
   const {timestamp, abbr} = params
   const homeTeam = TEAM_ABBR_TO_TEAM[homeAbbr]  
   const awayTeam = TEAM_ABBR_TO_TEAM[awayAbbr] 
+  const [numComments, setNumComments] = useState(0)
+  const [fetchedComments, setFetchedComments] = useState(0)
   const [homeRec, setHomeRec] = useState()
   const [awayRec, setAwayRec] = useState()
   const [links, setLinks] = useState({nba: '', home: '', away: '', thread: ''})
   const [comments, setComments] = useState([])
   const [fetched, setFetched] = useState(false)
+
+  const fetchGameCommentsPushshift = (id, after, comments) => {
+    const url = `https://api.pushshift.io/reddit/comment/search/?link_id=${id}&limit=500&after=${after}`
+
+    return fetch(url)
+      .then(res => res.json())
+      .then(
+        result => {
+          const data = result.data
+          if(data.length===0) return comments
+
+          after = data[data.length-1].created_utc
+          const nResults = data.length 
+          comments = [...comments, ...addTones(data)]
+          setFetchedComments(comments.length)
+          if(nResults===500){
+            return fetchGameCommentsPushshift(id, after, comments)
+          }
+          else
+            return comments
+        })
+    }
+
+  const fetchGameComments = (id, after, comments) => {
+      return fetch('https://threadalytics.com/api/comments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({id: id})
+        })
+        .then(res => res.json())
+        .then(res => {
+          const {num_comments} = res
+          if(num_comments){
+            setNumComments(num_comments)
+            // eslint-disable-next-line
+            throw('Too many comments, fetching via Pushshift')
+          }
+          comments = [...addTones(comments)]
+          return comments
+        })
+        .catch(e => {
+           return fetchGameCommentsPushshift(id, after, [])
+        })
+  }
 
 
   const fetchData = () => {
@@ -215,8 +272,18 @@ const Game = () => {
                     }
                     else{
                       return (
-                        <div style={{display: 'flex', justifyContent: 'center'}}>
-                          <RingLoader size={400} color={loadingColor} loading={true}/>
+                        <div>
+                          <div style={{display: 'flex', justifyContent: 'center'}}>
+                            <RingLoader size={400} color={loadingColor} loading={true}/>
+                          </div>
+                          {
+                            numComments>0 ?
+                            <Row style={{justifyContent: 'center'}}>
+                               <h1>Fetched {fetchedComments}/{numComments}</h1>
+                            </Row>
+                            :
+                            <div/>
+                          }
                         </div>
                       )
                    }
