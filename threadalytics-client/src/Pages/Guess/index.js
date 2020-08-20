@@ -34,12 +34,13 @@ const Guess = () => {
   const [options, setOptions] = useState([])
 
   const filterData = c => {
-    if(!c.fixedFlair) return false
+    if(!c.fixedFlair || c.body.length>500) return false
     for(const p in players){
-      const l = players[p].split(' ')
+      const l = players[p].name.split(' ')
       for(const w in l){
         const name = l[w].replace(/[^0-9a-z]/gi, '').toLowerCase()
         if(c.body.toLowerCase().includes(' '+name+' ') && stopwords.indexOf(name)===-1){
+          c.team = players[p].team
           return true
         }
       }
@@ -69,11 +70,10 @@ const Guess = () => {
               }
           })
           const linkId = []
-          console.log(filteredData)
           const data = filteredData.filter(filterData).map(d => {
             const abbr = TEAM_TO_TEAM_ABBR[d.fixedFlair.toUpperCase()]
             linkId.push(d.link_id.substr(3))
-            return {body: d.body, flair: d.fixedFlair, image: logoUrl(abbr), author: d.author}
+            return {body: d.body, flair: d.fixedFlair, image: logoUrl(abbr), author: d.author, team: d.team}
           })
           const linkIdStr = linkId.join(',')
           const url = `https://api.pushshift.io/reddit/search/submission/?subreddit=nba&ids=${linkIdStr}`
@@ -96,23 +96,16 @@ const Guess = () => {
 
   const getOptions = () => {
     if(data.length===0) return
-    const indices = [index]
-    const options = [data[index].flair]
-    while(options.length<4){
-      const i = Math.floor(Math.random() * Math.floor(data.length))
-      if(options.indexOf(data[i].flair)===-1){
-        options.push(data[i].flair)
-        indices.push(i)
-      }
-    }
-    indices.sort(() => Math.random() - 0.5)
-    const shuffledOptions = indices.map(i => {
-      if(data[i].flair===data[index].flair)
-        return {...data[i], color: '#d4edda'}
-      else
-        return {...data[i], color: '#f8d7da'}
-    })
-    setOptions(shuffledOptions)
+    let i = Math.floor(Math.random() * Math.floor(data.length))
+    while(i===index)
+      i = Math.floor(Math.random() * Math.floor(data.length))
+    let options
+    if(Math.random()<0.5)
+      options = [{...data[i], color: '#f8d7da'}, {...data[index], color: '#d4edda'}]
+    else
+      options = [{...data[index], color: '#d4edda'}, {...data[i], color: '#f8d7da'}]
+    console.log(options)
+    setOptions(options)
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

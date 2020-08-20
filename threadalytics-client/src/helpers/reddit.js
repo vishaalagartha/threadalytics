@@ -36,11 +36,14 @@ export const getTeamGameThread = (teamAbbr, opponentAbbr, timestamp) => {
     .then(res => res.json())
     .then(res => {
       const {data} = res
+      let bestData = null
       for(const i in data){
         const title = data[i].title.toLowerCase()
         if(title.includes('post') || title.includes('pre'))
           continue
-        return data[i]
+        if(!bestData || bestData.num_comments<data[i].num_comments)
+          bestData = data[i]
       }
+      return bestData
     })
 }
