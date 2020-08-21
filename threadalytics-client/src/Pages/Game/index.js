@@ -80,13 +80,13 @@ const Game = () => {
         })
         .then(res => res.json())
         .then(res => {
-          const {num_comments} = res
+          const {num_comments, data} = res
           if(num_comments){
             setNumComments(num_comments)
             // eslint-disable-next-line
             throw('Too many comments, fetching via Pushshift')
           }
-          comments = [...addTones(comments)]
+          comments = [...addTones(res)]
           return comments
         })
         .catch(e => {
