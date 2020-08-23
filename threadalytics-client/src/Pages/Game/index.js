@@ -80,7 +80,7 @@ const Game = () => {
         })
         .then(res => res.json())
         .then(res => {
-          const {num_comments, data} = res
+          const {num_comments} = res
           if(num_comments){
             setNumComments(num_comments)
             // eslint-disable-next-line

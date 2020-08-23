@@ -3,7 +3,7 @@ import Fade from 'react-reveal'
 import { Container, Col, Row, Image, Alert } from 'react-bootstrap'
 import Header from 'Components/Header'
 import { RingLoader } from 'react-spinners'
-import { TEAM_TO_TEAM_ABBR, TEAM_ABBR_TO_TEAM, stopwords, logoUrl } from 'helpers/constants'
+import { SUBREDDIT_TO_TEAM, TEAM_TO_SUBREDDIT, TEAM_TO_TEAM_ABBR, stopwords, logoUrl } from 'helpers/constants'
 import { players } from 'helpers/players'
 //import { data } from 'helpers/mockData'
 
@@ -23,61 +23,58 @@ const styles = {
 }
 
 const Guess = () => { 
-  const [data, setData] = useState([])
-  const [index, setIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [attempted, setAttempted] = useState(0)
-  const [before, setBefore] = useState(parseInt(new Date().getTime()/1000))
+
+  const initialData = {}
+  Object.values(TEAM_TO_SUBREDDIT).forEach(sub => {
+    initialData[sub.substr(2)] = {before: parseInt(new Date().getTime()/1000), index: 0, comments: []}
+  })
+  const [data, setData] = useState(initialData)
 
   const [status, setStatus] = useState('unselected')
 
-  const [options, setOptions] = useState([])
+  const [options, setOptions] = useState(null)
 
-  const filterData = c => {
-    if(!c.fixedFlair || c.body.length>500) return false
-    for(const p in players){
-      const l = players[p].name.split(' ')
-      for(const w in l){
-        const name = l[w].replace(/[^0-9a-z]/gi, '').toLowerCase()
-        if(c.body.toLowerCase().includes(' '+name+' ') && stopwords.indexOf(name)===-1){
-          c.team = players[p].team
-          return true
+
+
+  const fetchCommentsForSub = sub => {
+    const {before, comments, index} = data[sub] 
+    if(index<comments.length-1 || options) return Promise.resolve({...data[sub], sub})
+    const teamAbbr = TEAM_TO_TEAM_ABBR[SUBREDDIT_TO_TEAM['r/'+sub].toUpperCase()] 
+    const teamPlayers = players.filter(p => p.team===teamAbbr)
+
+    const teamFilter = c => {
+      /*
+      if(c.body.length>200) return false
+      for(const p in teamPlayers){
+        const l = teamPlayers[p].name.split(' ')
+        for(const w in l){
+          const name = l[w].replace(/[^0-9a-z]/gi, '').toLowerCase()
+          if(c.body.toLowerCase().includes(' '+name+' ') && stopwords.indexOf(name)===-1){
+            return true
+          }
         }
       }
+      return false
+      */
+      return true
     }
-    return false
-  }
 
-
-  const fetchComments = () => {
-    const url = `https://api.pushshift.io/reddit/search/comment/?subreddit=nba&size=500&score=<-10&before=${before}`
-    fetch(url)
+    const url = `https://api.pushshift.io/reddit/search/comment/?subreddit=${sub}&size=100&before=${before}`
+    return fetch(url)
         .then(res => res.json())
         .then(res => {
           if(!res.data) return
-          setBefore(res.data[0].created_utc)
-          const filteredData = res.data.filter(c => c.author_flair_text!==null)
-          const teams = Object.values(TEAM_ABBR_TO_TEAM)
-          const teamSuffixes = teams.map(t => {
-            const l = t.split(' ')
-            return l[l.length-1].toLowerCase()
-          })
-          filteredData.forEach(c => {
-            for(const i in teamSuffixes)
-              if(c.author_flair_text.toLowerCase().includes(teamSuffixes[i])){
-                c.fixedFlair = teams[i] 
-                break
-              }
-          })
+          const newBefore = res.data[0].created_utc
           const linkId = []
-          const data = filteredData.filter(filterData).map(d => {
-            const abbr = TEAM_TO_TEAM_ABBR[d.fixedFlair.toUpperCase()]
+          const comments = res.data.filter(teamFilter).map(d => {
             linkId.push(d.link_id.substr(3))
-            return {body: d.body, flair: d.fixedFlair, image: logoUrl(abbr), author: d.author, team: d.team}
+            return {body: d.body, author: d.author}
           })
           const linkIdStr = linkId.join(',')
-          const url = `https://api.pushshift.io/reddit/search/submission/?subreddit=nba&ids=${linkIdStr}`
-          fetch(url)
+          const url = `https://api.pushshift.io/reddit/search/submission/?subreddit=${sub}&ids=${linkIdStr}`
+          return fetch(url)
               .then(res => res.json())
               .then(res => {
                 if(!res.data) return
@@ -85,53 +82,70 @@ const Guess = () => {
                 for(const i in linkId)
                   for(const j in titleData){
                     if(titleData[j].id===linkId[i]){
-                      data[i].title = titleData[j].title
+                      comments[i].title = titleData[j].title
                       break
                     }
                   }
-                setData(data)
+                const subData = {before: newBefore, index: 0, comments}
+                setData(data => { return {...data, [sub]: subData}})
+                return {...subData, sub}
               })
+
+
+
+
         })
+
   }
 
-  const getOptions = () => {
-    if(data.length===0) return
-    let i = Math.floor(Math.random() * Math.floor(data.length))
-    while(i===index)
-      i = Math.floor(Math.random() * Math.floor(data.length))
-    let options
-    if(Math.random()<0.5)
-      options = [{...data[i], color: '#f8d7da'}, {...data[index], color: '#d4edda'}]
-    else
-      options = [{...data[index], color: '#d4edda'}, {...data[i], color: '#f8d7da'}]
-    console.log(options)
-    setOptions(options)
+  const getTeamOptions = () => {
+    if(options) return
+    const teams = Object.values(TEAM_TO_SUBREDDIT).map(s => s.substr(2))
+    const t = teams[Math.floor(Math.random() * Math.floor(teams.length))]
+    fetchCommentsForSub(t)
+      .then(res => {
+        const {comments, sub, index} = res
+
+        const correctOpt = {...comments[index], team: sub, image: logoUrl(TEAM_TO_TEAM_ABBR[SUBREDDIT_TO_TEAM['r/'+sub].toUpperCase()]), correct: true, color: '#d4edda'}
+        const seenOptions = [sub]
+        const opts = [correctOpt]
+        let other = teams[Math.floor(Math.random() * Math.floor(teams.length))]
+        while(opts.length<4){
+          if(seenOptions.indexOf(other)!==-1)
+            other = teams[Math.floor(Math.random() * Math.floor(teams.length))]
+          else{
+            const incorrectOpt = {team: other, image: logoUrl(TEAM_TO_TEAM_ABBR[SUBREDDIT_TO_TEAM['r/'+other].toUpperCase()]), correct: false, color: '#f8d7da'}
+            seenOptions.push(other)
+            opts.push(incorrectOpt)
+          }
+        }
+        opts.sort(() => Math.random() - 0.5)
+        setOptions(opts)
+
+        const newSubData = {...data[sub], index: index+1}
+        setData({...data, ...newSubData})
+      })
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => fetchComments(), []) 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => getOptions(), [data, index]) 
+
+  // eslint-disable-next-line
+  useEffect(() => getTeamOptions(), [options]) 
 
   const handleSelect = el => {
-    if(el.flair===data[index].flair)
+    if(el.correct)
       setStatus('correct')
     else
       setStatus('incorrect')
 
     setTimeout(() => {
-      if(el.flair===data[index].flair)
+      const correct = options[0].correct ? options[0] : options[1]
+      if(data[correct.team].comments.length===data[correct.team].index-1)
+        fetchCommentsForSub(correct.team)
+      setOptions(null)
+      if(el.correct)
         setScore(score+1)
+      setAttempted(attempted+1)
       setStatus('unselected')
-      if(index===data.length-1){
-        setData([])
-        setAttempted(attempted+1)
-        setIndex(0)
-      }
-      else{
-        setAttempted(attempted+1)
-        setIndex(index+1)
-      }
     }, 2000)
   }
 
@@ -147,9 +161,8 @@ const Guess = () => {
               <h3>Given the comment, author, and post title, can you guess the author's team?</h3>
             </Row>
             <Row style={{justifyContent: 'center'}}>
-              {data.length>0
-                ?
-                 <Col xs={12} style={styles.question}>
+              {options ?
+               <Col xs={12} style={styles.question}>
                   <Row style={{margin: '1em', justifyContent: 'center'}}>
                      <h3>
                         Comment:
@@ -157,29 +170,34 @@ const Guess = () => {
                   </Row>
                   <Row style={{margin: '1em', justifyContent: 'center'}}>
                      <h5>
-                        <i>{`"${data[index].body}"`}</i>
+                        <i>
+                          {`"${options.filter(o => o.correct)[0].body}"`}
+                        </i>
                      </h5>
                   </Row>
                   <Row style={{margin: '1em', justifyContent: 'center'}}>
                      <h4>
-                        - /u/{data[index].author}
+                        {`- /u/${options.filter(o => o.correct)[0].author}`}
                      </h4>
                   </Row>
                   <Row style={{margin: '1em', justifyContent: 'center'}}>
                      <h4>
-                        Posted in: <i>{`"${data[index].title}"`}</i>
+                        Posted in: 
+                        <i>
+                          {`"${options.filter(o => o.correct)[0].title}"`}
+                        </i>
                      </h4>
                   </Row>
                   <Row style={{justifyContent: 'center'}}>
                     {options.map((el, i) => {
-                      return ( 
+                      return (
                         <Col key={i} xs={6} style={{marginTop: '20px', justifyContent: 'center'}}>
                           <div style={{backgroundColor: status!=='unselected' ? el.color : 'white', border: 'black solid 1px', cursor: 'pointer'}} onClick={() => handleSelect(el)}>
                             <Image src={el.image} roundedCircle fluid style={{height: '200px'}}/>
                           </div>
                         </Col>
-                      
-                   )})}
+                      )
+                    })}
                   </Row>
                 </Col>
                 :

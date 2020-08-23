@@ -54,9 +54,7 @@ const Header = ({team}) => {
             <Nav.Link href='/user'>
               Profiles
             </Nav.Link>
-            {/*
             <Nav.Link href='/guess-that-flair'>Guess that flair!</Nav.Link>
-            */}
             <Nav.Link href='/about'>About Me</Nav.Link>
           </Nav>
         </Navbar.Collapse>
