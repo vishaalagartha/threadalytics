@@ -31,7 +31,7 @@ with open('sentiments.csv', 'r') as csvfile:
       items.append({
         'PutRequest': {
           'Item': {
-            'name_timestamp': row['name'].replace(' ', '_') + '@' + str(timestamp), 
+            'name': row['name'], 
             'pos_sentences': row['pos_sentences'],
             'neg_sentences': row['neg_sentences'],
             'timestamp': str(timestamp),

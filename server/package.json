@@ -1,0 +1,26 @@
+{
+  "name": "threadalytics-server",
+  "version": "1.0.0",
+  "description": "A server for the threadalytics application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "export AWS_PROFILE=threadalytics && nodemon --exec node_modules/.bin/babel-node src/index.js"
+  },
+  "author": "Vishaal Agartha",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.478.0",
+    "@aws-sdk/lib-dynamodb": "^3.478.0",
+    "@aws-sdk/util-dynamodb": "^3.478.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.6",
+    "@babel/node": "^7.22.19",
+    "@babel/preset-env": "^7.23.6",
+    "nodemon": "^3.0.2"
+  }
+}

@@ -39,8 +39,7 @@ def get_sentences():
 response = get_sentences()
 scores = collections.defaultdict(int)
 for item in response:
-  name_timestamp = item['name_timestamp']
-  name = ' '.join(name_timestamp[:name_timestamp.index("@")].split('_'))
+  name = item['name']
   pos_sentences = item['pos_sentences'].split(';')
   neg_sentences = item['neg_sentences'].split(';')
   score = 0
