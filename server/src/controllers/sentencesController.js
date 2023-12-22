@@ -1,4 +1,4 @@
-import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient, QueryCommand, ScanCommand } from '@aws-sdk/client-dynamodb'
 import Attr from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
@@ -8,12 +8,15 @@ const docClient = DynamoDBDocumentClient.from(client)
 
 const getSentences = async (name, type) => {
   try {
-    const command = new ScanCommand({
+    const command = new QueryCommand({
       TableName: 'sentiment_sentences',
-      FilterExpression: 'player_timestamp begins_with(:player_timestamp)',
-      ExpressionAttributeValues: {
-        ":player_timestamp": { S: "Stephen_Curry" },
+      KeyConditionExpression: "#name = :nameValue",
+      ExpressionAttributeNames: {
+        '#name': 'name'
       },
+      ExpressionAttributeValues: {
+        ":nameValue": { S: 'Stephen Curry' },
+      }
     })
     const response = await docClient.send(command)
     return response.Items.map(item => unmarshall(item))
