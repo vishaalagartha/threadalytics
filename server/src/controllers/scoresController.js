@@ -2,7 +2,7 @@ import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 
-const client = new DynamoDBClient({})
+const client = new DynamoDBClient({ region: 'us-west-1' })
 const docClient = DynamoDBDocumentClient.from(client)
 
 const getScores = async () => {

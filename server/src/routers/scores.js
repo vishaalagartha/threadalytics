@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     const pos = results.slice(-n).reverse()
     return res.status(200).json({ neg, pos })
   } catch (err) {
-    console.err(err)
+    console.error(err)
     res.status(500).json({ message: err })
   }
 })

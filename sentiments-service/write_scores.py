@@ -1,5 +1,6 @@
 from boto3 import resource, session
 from botocore.config import Config
+from boto3.dynamodb.conditions import Key
 from decimal import Decimal
 import csv
 
@@ -10,6 +11,9 @@ scores_table = dynamo_client.Table('sentiment_scores')
 
 def updateScores(items):
   for item in items:
+     res = scores_table.query(KeyConditionExpression=Key('name').eq(item['name']))
+     for old_item in res['Items']:
+      scores_table.delete_item(Key=old_item)
      scores_table.put_item(Item=item)
 
 items = []

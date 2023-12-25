@@ -1,7 +1,6 @@
 from boto3 import resource, session
 from botocore.config import Config
 from decimal import Decimal
-from boto3.dynamodb.conditions import Key
 from time import time
 import csv
 

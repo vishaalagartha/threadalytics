@@ -2,9 +2,10 @@ import express from 'express'
 import cors from 'cors'
 import routers from './routers'
 
-const PORT = parseInt(process.env.PORT || '3001')
+const PORT = parseInt(process.env.PORT || '8080')
 
 const app = express()
+  .use(cors())
   .use(express.json())
   .use('/api', routers)
 

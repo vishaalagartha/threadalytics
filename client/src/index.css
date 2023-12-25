@@ -1,0 +1,22 @@
+@font-face {
+  font-family: 'Action Bold NBA';
+  src: local('Action Bold NBA'), url(./styles/Action-Bold-NBA.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Action Italics NBA';
+  src: local('Action Italics NBA'), url(./styles/Action-Italics-NBA.ttf) format('truetype');
+}
+
+body {
+  margin: 0;
+  font-family: Action Bold NBA;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

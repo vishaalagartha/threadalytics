@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ENV=prod && babel src/ -d dist",
     "start": "export AWS_PROFILE=threadalytics && nodemon --exec node_modules/.bin/babel-node src/index.js"
   },
   "author": "Vishaal Agartha",
