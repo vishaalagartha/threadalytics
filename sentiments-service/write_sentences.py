@@ -3,8 +3,9 @@ from botocore.config import Config
 from decimal import Decimal
 from time import time
 import csv
+import os
 
-sess = session.Session(profile_name='threadalytics')
+sess = session.Session() if os.getenv('ENV') == 'PROD' else session.Session(profile_name='threadalytics')
 config = Config(retries={ 'max_attempts': 20, 'mode': 'adaptive' })
 dynamo_client = sess.resource(service_name='dynamodb', region_name='us-west-1', config=config)
 

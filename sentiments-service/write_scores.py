@@ -3,8 +3,9 @@ from botocore.config import Config
 from boto3.dynamodb.conditions import Key
 from decimal import Decimal
 import csv
+import os
 
-sess = session.Session(profile_name='threadalytics')
+sess = session.Session() if os.getenv('ENV') == 'PROD' else session.Session(profile_name='threadalytics')
 config = Config(retries={ 'max_attempts': 20, 'mode': 'adaptive' })
 dynamo_client = sess.resource(service_name='dynamodb', region_name='us-west-1', config=config)
 scores_table = dynamo_client.Table('sentiment_scores')
