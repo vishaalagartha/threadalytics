@@ -65,14 +65,15 @@ const drawBarChart = (data, element) => {
         const teamStr = d['name'].toLowerCase().replaceAll(' ', '_')
         img.src = `http://cdn.bleacherreport.net/images/team_logos/164x164/${teamStr}.png`
       }
-      tooltip.style = 'position:absolute;left:10px;top:100px;'
+      const text = document.createElement('p')
+      text.innerText = d.sentences
+      tooltip.style = 'text-overflow: ellipsis;max-width:200px;max-height:200px;position:absolute;text-align:left;font-size:8px;left:10px;top:100px;'
       tooltip.appendChild(img)
+      tooltip.appendChild(text)
     })
     .on('mouseout', () => {
       const tooltip = document.getElementById('tooltip')
-      const img = tooltip.getElementsByTagName('img')[0]
-      tooltip.style = 'position:absolute;'
-      tooltip.removeChild(img)
+      tooltip.innerHTML = ''
     })
 
   svg.append('g')

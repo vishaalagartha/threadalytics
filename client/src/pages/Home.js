@@ -4,6 +4,10 @@ import drawBarChart from '../components/drawBarChart'
 
 const tipStyle = {
   position: 'absolute',
+  fontSize: 8,
+  textAlign: 'left',
+  maxWidth: 200,
+  maxHeight: 200,
 }
 
 const Home = () => {
@@ -13,8 +17,7 @@ const Home = () => {
   useEffect(() => {
     const fetchScores = async () => {
       const scores = await getScores()
-      const allScores = scores.pos.concat(scores.neg)
-      setScores(allScores)
+      setScores(scores)
     }
     fetchScores()
   }, [])

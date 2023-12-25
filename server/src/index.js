@@ -7,7 +7,7 @@ const PORT = parseInt(process.env.PORT || '8080')
 const app = express()
   .use(cors())
   .use(express.json())
-  .use('/api', routers)
+  .use('/', routers)
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`)

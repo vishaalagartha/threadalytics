@@ -1,1 +1,1 @@
-export const API = 'https://api.threadalytics.com'
+export const API = process.env.PROD ? 'https://api.threadalytics.com' : 'http://localhost:8080'

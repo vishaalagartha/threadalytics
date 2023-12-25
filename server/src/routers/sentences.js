@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
   const name = req.get('name') || 'Stephen Curry'
   const type = req.get('type') || 'positive'
   try {
-    const results = await getSentences(name, type)
+    const results = await getSentences(name)
     const response = []
     for(const result of results) {
       const sentences = type === 'positive' ? result.pos_sentences.split(';') : result.neg_sentences.split(';')
