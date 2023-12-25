@@ -44,8 +44,10 @@ for el in d:
             score = sid.polarity_scores(el[1])['compound']
             sentiments[name]['score'] += score
             if score > 0:
+                print(name, 'pos', el[1])
                 sentiments[name]['pos_sentences'].append(el[1])
             elif score < 0:
+                print(name, 'neg', el[1])
                 sentiments[name]['neg_sentences'].append(el[1])
 
 with open('sentiments.csv', 'w', newline='') as csvfile:

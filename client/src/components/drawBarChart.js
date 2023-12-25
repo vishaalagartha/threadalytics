@@ -9,7 +9,7 @@ const drawBarChart = (data, element) => {
   const marginRight = 0
   const marginBottom = 30
   const marginLeft = 40
-
+  console.log(data)
   d3.select(element).select('svg').remove()
   const svg = d3
     .select(element)
@@ -40,6 +40,7 @@ const drawBarChart = (data, element) => {
     .attr('width', x.bandwidth())
     .attr('fill', d => {
       const team = PLAYER_TO_TEAM[d['name']] ?  PLAYER_TO_TEAM[d['name']]['team_abbr'] : TEAM_TO_TEAM_ABBR[d['name']]
+      if(!team) return 'white'
       const mainColor = TEAM_COLORS[team]['main_color']
       const secondaryColor = TEAM_COLORS[team]['secondary_color']
       if(mainColor === 'black')
@@ -49,6 +50,7 @@ const drawBarChart = (data, element) => {
     .attr('stroke-width', 2)
     .attr('stroke', d => {
       const team = PLAYER_TO_TEAM[d['name']] ?  PLAYER_TO_TEAM[d['name']]['team_abbr'] : TEAM_TO_TEAM_ABBR[d['name']]
+      if(!team) return 'black'
       const mainColor = TEAM_COLORS[team]['main_color']
       const secondaryColor = TEAM_COLORS[team]['secondary_color']
       if(mainColor === 'black')
