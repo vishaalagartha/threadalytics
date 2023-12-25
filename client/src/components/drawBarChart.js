@@ -31,12 +31,8 @@ const drawBarChart = (data, element) => {
     .enter()
     .append('rect')
     .attr('x', d => x(d.name))
-    .attr('y', d => {
-      const v = y(d.score)
-      if(v > middle) return middle
-      return v
-    })
-    .attr('height', (d) => Math.abs(y(0) - y(d.score)))
+    .attr('y', middle)
+    .attr('height', 0)
     .attr('width', x.bandwidth())
     .attr('fill', d => {
       const team = PLAYER_TO_TEAM[d['name']] ?  PLAYER_TO_TEAM[d['name']]['team_abbr'] : TEAM_TO_TEAM_ABBR[d['name']]
@@ -76,6 +72,14 @@ const drawBarChart = (data, element) => {
     .on('mouseout', () => {
       const tooltip = document.getElementById('tooltip')
       tooltip.innerHTML = ''
+    })
+    .transition()
+    .duration(1000)
+    .attr('height', (d) => Math.abs(y(0) - y(d.score)))
+    .attr('y', d => {
+      const v = y(d.score)
+      if(v > middle) return middle
+      return v
     })
 
   svg.append('g')
