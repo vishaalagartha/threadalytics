@@ -66,8 +66,8 @@ const drawBarChart = (data, element) => {
         img.src = `http://cdn.bleacherreport.net/images/team_logos/164x164/${teamStr}.png`
       }
       const text = document.createElement('p')
-      text.innerText = d.sentences
-      tooltip.style = 'text-overflow: ellipsis;max-width:200px;max-height:200px;position:absolute;text-align:left;font-size:8px;left:10px;top:100px;'
+      text.innerText = d.sentences.replaceAll('\n\n', '\n')
+      tooltip.style = 'text-overflow: ellipsis;max-width:600px;max-height:200px;position:absolute;text-align:left;font-size:8px;left:10px;top:100px;'
       tooltip.appendChild(img)
       tooltip.appendChild(text)
     })

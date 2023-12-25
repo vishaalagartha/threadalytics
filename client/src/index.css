@@ -9,7 +9,7 @@
 
 body {
   margin: 0;
-  font-family: Action Bold NBA;
+  font-family: Action Bold NBA !important;
   font-weight: bold;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -19,4 +19,8 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.inline-link {
+  display: inline-block;
 }

@@ -1,1 +1,1 @@
-export const API = process.env.PROD ? 'https://api.threadalytics.com' : 'http://localhost:8080'
+export const API = process.env.NODE_ENV === 'production' ? 'https://api.threadalytics.com' : 'http://localhost:8080'
