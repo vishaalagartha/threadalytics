@@ -24,3 +24,7 @@ code {
 .inline-link {
   display: inline-block;
 }
+
+.nba-text {
+  font-family: 'Action Italics NBA';
+}
