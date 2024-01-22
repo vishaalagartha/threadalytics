@@ -32,6 +32,17 @@ const Home = () => {
   const [option, setOption] = useState(dates[0].utcDateStr)
   const [scores, setScores] = useState([])
   const [sentences, setSentences] = useState({})
+  const [width, setWidth] = useState(window.innerWidth)
+  const isMobile = width <= 768
+
+const handleWindowSizeChange = () => setWidth(window.innerWidth)
+
+useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+        window.removeEventListener('resize', handleWindowSizeChange);
+    }
+}, [])
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -57,6 +68,7 @@ const Home = () => {
   const config = {
     interaction: {
       tooltip: {
+        disableNative: false,
         render: (e, item) => {
           const { title } = item
           let src
@@ -67,15 +79,16 @@ const Home = () => {
             const teamStr = title.toLowerCase().replaceAll(' ', '_')
             src = `http://cdn.bleacherreport.net/images/team_logos/164x164/${teamStr}.png`
           }
+          const styles = isMobile ? { maxWidth: 200 } : {}
           return (
-            <>
+            <div style={styles}>
               <Row className="justify-content-center">
                 <Image src={src} className="w-50" />
               </Row>
               <Row className="nba-text">
                 {sentences[title].map(s => <><span>{s}</span><br/></>)}
               </Row>
-            </>
+            </div>
           )
         },
       }
@@ -103,7 +116,6 @@ const Home = () => {
   const handleChange = (e) => {
     setOption(e.target.value)
   }
-
   return (
     <div>
       <Header />
