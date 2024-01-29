@@ -9,6 +9,7 @@ const getScores = async (option) => {
       return res.data
   } catch (e) {
     console.error(e)
+    return e
   }
   
 }

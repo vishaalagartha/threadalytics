@@ -51,6 +51,10 @@ router.get('/', async (req, res) => {
     const Key = `${year}-${month}-${date}-${hour}.csv`
     const params = { Bucket: 'threadalytics-data', Key }
     const csvFile = s3.getObject(params).createReadStream()
+    .on('error', (e) => {
+      res.status(500).json({ message: e })
+      return
+    })
     let data = []
     const parser = csv.parseStream(csvFile, { headers: true })
       .on('data', (d) => {

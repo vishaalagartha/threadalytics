@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getScores } from '../api/scores'
 import Header from '../components/Header'
 import { Column } from '@ant-design/charts'
+import { message } from 'antd'
 import Form from 'react-bootstrap/Form'
 import { Row, Col, Image } from 'react-bootstrap'
 import { PLAYER_TO_TEAM, TEAM_TO_TEAM_HEX_COLOR, PLAYER_TO_ID} from '../helpers/constants'
@@ -10,6 +11,7 @@ import { PLAYER_TO_TEAM, TEAM_TO_TEAM_HEX_COLOR, PLAYER_TO_ID} from '../helpers/
 const Home = () => {
   const date = new Date()
   const dates = []
+  const [messageApi, contextHolder] = message.useMessage()
   while (true) {
     if (date.getMinutes() < 5) {
       date.setHours(date.getHours() - 1)
@@ -47,7 +49,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchScores = async () => {
       const scores = await getScores(option)
-      if (scores) {
+      if (scores && !(scores instanceof Error)) {
         const sentencesObj = {}
         const data = scores.map((s) => {
           const { name, score, sentences } = s
@@ -60,10 +62,12 @@ useEffect(() => {
         })
         setSentences(sentencesObj)
         setScores(data)
+      } else {
+        messageApi.info('No data for selected date!')
       }
     }
     fetchScores()
-  }, [option])
+  }, [option, messageApi])
 
   const config = {
     interaction: {
@@ -119,6 +123,7 @@ useEffect(() => {
   return (
     <div>
       <Header />
+      {contextHolder}
       <Row className="justify-content-center text-center my-3">
         <h1>
           r/nba Sentiments
