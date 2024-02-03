@@ -3,8 +3,7 @@ import { getBucketContents } from '../utils/db'
 const router = Router()
 
 router.get('/', async (req, res) => {
-  const { year, month, date, hour } = req.query
-  const key = `${year}-${month}-${date}-${hour}.csv`
+  const key = `overall_sentiments.csv`
   try {
     const data = await getBucketContents(key)
     res.status(200).json(data)
