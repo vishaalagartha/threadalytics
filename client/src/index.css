@@ -7,6 +7,10 @@
   src: local('Action Italics NBA'), url(./styles/Action-Italics-NBA.ttf) format('truetype');
 }
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
   font-family: Action Bold NBA !important;

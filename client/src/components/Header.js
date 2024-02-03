@@ -16,6 +16,15 @@ const Header = () => {
         </Navbar.Toggle>
         <Navbar.Collapse id='responsive-navbar-nav'>
           <Nav className='ml-auto mr-3'>
+          <Nav.Link href='/winners'>
+              Daily Winners
+            </Nav.Link>
+            <Nav.Link href='/sentiments'>
+              Player Sentiments
+            </Nav.Link>
+            <Nav.Link href='/comments'>
+              Top Comments
+            </Nav.Link>
             <Nav.Link href='/design'>
               How it works
             </Nav.Link>
