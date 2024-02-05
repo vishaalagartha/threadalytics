@@ -5,6 +5,8 @@ import Form from 'react-bootstrap/Form'
 import { Row, Col, Image } from 'react-bootstrap'
 import { getWinners } from '../api/winners'
 import { PLAYER_TO_ID} from '../helpers/constants'
+import Belt from '../assets/belt.png'
+import Crown from '../assets/crown.png'
 
 
 const Winners = () => {
@@ -24,19 +26,9 @@ const Winners = () => {
     if (utcDateStr === '2024-02-01') break
   }
   const [option, setOption] = useState(dates[0].utcDateStr)
-  const [width, setWidth] = useState(window.innerWidth)
   const [player, setPlayer] = useState('')
   const [team, setTeam] = useState('')
-  const isMobile = width <= 768
 
-const handleWindowSizeChange = () => setWidth(window.innerWidth)
-
-useEffect(() => {
-    window.addEventListener('resize', handleWindowSizeChange);
-    return () => {
-        window.removeEventListener('resize', handleWindowSizeChange);
-    }
-}, [])
 
   useEffect(() => {
     const fetchWinners = async () => {
@@ -73,10 +65,18 @@ useEffect(() => {
       </Row>
       <Row className="my-3">
         <Col xs={6} className="flex justify-content-center">
-          {player && <Image src={playerUrl}/> }
+          {player && 
+            <div>
+              <Image src={Crown} className="absolute" width={100} style={{ transform: `translate(80%, -50%)`}} />
+              <Image src={playerUrl} />
+            </div>}
         </Col>
         <Col xs={6} className="flex justify-content-center">
-          {team && <Image src={teamUrl} /> }
+          {team &&             
+            <div>
+              <Image src={Belt} className="absolute" width={200} style={{ transform: `translate(-10%, 25%)`}}/>
+              <Image src={teamUrl} />
+            </div>}
         </Col>
       </Row>
       <Row>
