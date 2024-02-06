@@ -4,6 +4,7 @@ const router = Router()
 
 router.get('/', async (req, res) => {
   const { year, month, date, hour } = req.query
+  console.log(year, month, date, hour)
   const key = `${year}-${month}-${date}-${hour}.csv`
   try {
     const data = await getBucketContents(key)

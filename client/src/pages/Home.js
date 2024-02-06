@@ -8,19 +8,8 @@ import { Line, Pie } from '@ant-design/charts'
 
 const Players = () => {
   const [messageApi, contextHolder] = message.useMessage()
-  const [width, setWidth] = useState(window.innerWidth)
-  const isMobile = width <= 768
   const [sentiments, setSentiments] = useState([])
   const [pieData, setPieData] = useState([])
-
-const handleWindowSizeChange = () => setWidth(window.innerWidth)
-
-useEffect(() => {
-    window.addEventListener('resize', handleWindowSizeChange);
-    return () => {
-        window.removeEventListener('resize', handleWindowSizeChange);
-    }
-}, [])
 
   useEffect(() => {
     const fetchSentiments = async () => {
@@ -36,7 +25,6 @@ useEffect(() => {
             score: +el.score
           }
         }).sort((a, b) => a.date - b.date)
-        console.log(data)
         const { pos, neg } = data[data.length - 1]
         const pieData = [{ sentiment: 'positive', 'Title Count': pos }, { sentiment: 'negative', 'Title Count': neg }]
         setPieData(pieData)
@@ -92,7 +80,7 @@ useEffect(() => {
           </h1>
         </Row>
         <Col xs={10} md={4}>
-          <h3>Positive:Negative Title Ratio</h3>
+          <h3>Today's Positive:Negative Title Ratio</h3>
           <Pie {...pieConfig} />
         </Col>
         <Col xs={10} md={6}>

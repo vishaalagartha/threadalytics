@@ -62,6 +62,9 @@ useEffect(() => {
         })
         setSentences(sentencesObj)
         setScores(data)
+        if (!data.length) {
+          messageApi.info('No data for selected date!')
+        }
       } else {
         messageApi.info('No data for selected date!')
       }
