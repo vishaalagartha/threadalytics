@@ -24,17 +24,6 @@ const Comments = () => {
     if (utcDateStr === '2024-02-01') break
   }
   const [option, setOption] = useState(dates[0].utcDateStr)
-  const [width, setWidth] = useState(window.innerWidth)
-  const isMobile = width <= 768
-
-const handleWindowSizeChange = () => setWidth(window.innerWidth)
-
-useEffect(() => {
-    window.addEventListener('resize', handleWindowSizeChange);
-    return () => {
-        window.removeEventListener('resize', handleWindowSizeChange);
-    }
-}, [])
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -95,7 +84,7 @@ useEffect(() => {
                 <tr key={i}>
                   <td>{i + 1}</td>
                   <td>{c.score}</td>
-                  <td><a href={`https://www.reddit.com${c.link}`}>{c.body}</a></td>
+                  <td><a href={`https://www.reddit.com${c.link}`} style={{ lineHeight: 30 }}>{c.body}</a></td>
                   <td>{c.author}</td>
                 </tr>
               )
