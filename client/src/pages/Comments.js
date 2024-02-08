@@ -84,7 +84,7 @@ const Comments = () => {
                 <tr key={i}>
                   <td>{i + 1}</td>
                   <td>{c.score}</td>
-                  <td><a href={`https://www.reddit.com${c.link}`} style={{ lineHeight: 30 }}>{c.body}</a></td>
+                  <td><a href={`https://www.reddit.com${c.link}`} style={{ lineHeight: 2 }}>{c.body}</a></td>
                   <td>{c.author}</td>
                 </tr>
               )
